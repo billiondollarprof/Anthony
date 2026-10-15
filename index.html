@@ -1,152 +1,737 @@
-// Cloudflare Pages Function: /api/content
-// Needs: KV binding named CONTENT, and a secret/variable named EDIT_PASSWORD.
-const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
-
-const DEFAULT_CONTENT = {
-  photo: '',
-  texts: {},
-  sections: [
-    {
-      type: 'cards',
-      title: 'What I built',
-      items: [
-        { t: 'Amara', b: 'Guest experience and automated CRM for hotels.', l: 'Amara', u: 'https://amara.ng' },
-        { t: 'StellaXafe Platform', b: 'Private, company-scoped AI for staff and operations.', l: 'StellaXafe', u: 'https://stellaxafe.com' },
-        { t: 'XALOM', b: 'Trust passport for the digital market in Africa.', l: 'XALOM', u: 'https://xalom.stellaxafe.com' },
-        { t: 'SHOMEA', b: 'Offline speech recognition for Bible references.', l: 'Listening test', u: 'https://shomea.pages.dev/dev' }
-      ]
-    }
-  ],
-  links: {
-    email: 'mailto:anthony@stellaxafe.com',
-    linkedin: 'https://www.linkedin.com/in/anthony-nwobosi-575b3717a',
-    github: 'https://github.com/billiondollarprof',
-    introVideo: 'https://www.loom.com/share/4b0e53e4adf34e7e9d2a3f2855e251ff',
-    stellaVideo: 'https://www.loom.com/share/6b6fba9e53a24ac795f73a9df820e72f',
-    amara: 'https://amara.ng',
-    stellaxafe: 'https://stellaxafe.com',
-    shomea: 'https://shomea.pages.dev/dev',
-    xalom: 'https://xalom.stellaxafe.com'
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anthony Nwobosi | AI Automation Specialist</title>
+<meta name="description" content="Anthony Nwobosi builds private AI systems and automations that take over the work businesses repeat by hand. Ask his AI assistant about his projects.">
+<meta name="theme-color" content="#040B1F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="Anthony Nwobosi | AI Automation Specialist">
+<meta property="og:description" content="Private AI systems and automations for the work your team repeats by hand. Ask his AI assistant.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#040B1F;
+    --panel:#08153A;
+    --navy:#0B2154;
+    --blue:#2F7BFF;
+    --blue-deep:#1B58D6;
+    --blue-soft:#8DB6FF;
+    --gold:#FFD23F;
+    --text:#EEF3FF;
+    --soft:#C6D3F2;
+    --muted:#93A5CF;
+    --line:rgba(150,180,255,.17);
+    --glass:rgba(255,255,255,.055);
+    --green:#3DDC97;
+    --display:"Bricolage Grotesque","Manrope",system-ui,sans-serif;
+    --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   }
-};
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:84px}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:var(--blue-soft)}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+  .wrap{width:min(1160px,100% - 40px);margin-inline:auto}
 
-const LOCKOUT_PREFIX = 'pin-lockout';
-function sameText(a, b) {
-  const x = new TextEncoder().encode(a), y = new TextEncoder().encode(b);
-  let d = x.length ^ y.length;
-  for (let i = 0; i < Math.max(x.length, y.length); i++) d |= (x[i] || 0) ^ (y[i] || 0);
-  return d === 0;
-}
+  /* header */
+  .bar{position:sticky;top:0;z-index:20;background:rgba(4,11,31,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none;letter-spacing:-.01em}
+  .brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--blue)}
+  .bar nav{display:flex;align-items:center;gap:30px}
+  .bar nav a.t{color:var(--soft);text-decoration:none;font-weight:500;font-size:.96rem}
+  .bar nav a.t:hover{color:#fff}
 
-function getClientKey(request) {
-  return request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-forwarded-for') ||
-    request.headers.get('x-real-ip') ||
-    'anonymous';
-}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 1rem var(--body);text-decoration:none;border-radius:12px;padding:14px 26px;border:1px solid transparent;cursor[...]
+  .btn.gold{background:var(--gold);color:#07163F}
+  .btn.gold:hover{background:#FFE07A}
+  .btn.ghost{background:var(--glass);color:#fff;border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--blue-soft);background:rgba(47,123,255,.15)}
+  .btn.sm{padding:10px 18px;font-size:.93rem;border-radius:10px}
 
-function getLockoutState(request) {
-  const key = `${LOCKOUT_PREFIX}:${getClientKey(request)}`;
-  const current = globalThis.__pinLockoutMap || new Map();
-  globalThis.__pinLockoutMap = current;
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding-block:72px 96px;
+    background:
+      radial-gradient(900px 520px at 88% -8%, rgba(47,123,255,.42), transparent 62%),
+      radial-gradient(700px 560px at -6% 30%, rgba(27,88,214,.30), transparent 62%),
+      linear-gradient(180deg,#061236 0%, var(--bg) 100%)}
+  .hero .wrap{display:grid;grid-template-columns:1.12fr .88fr;gap:64px;align-items:center}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(2.35rem,5.4vw,4.2rem);line-height:1.04;letter-spacing:-.035em;color:#fff;margin:0 0 24px}
+  .lede{font-size:1.16rem;color:var(--soft);max-width:35rem;margin:0 0 34px}
+  .actions{display:flex;flex-wrap:wrap;gap:14px}
+  .facts{display:flex;flex-wrap:wrap;gap:0;margin-top:46px;border-top:1px solid var(--line);padding-top:26px}
+  .facts div{padding-right:30px;margin-right:30px;border-right:1px solid var(--line)}
+  .facts div:last-child{border-right:0;margin-right:0;padding-right:0}
+  .facts b{display:block;font-family:var(--display);font-weight:700;font-size:1.5rem;color:#fff;letter-spacing:-.02em}
+  .facts span{font-size:.9rem;color:var(--muted)}
 
-  const data = current.get(key) || { attempts: 0, resetAt: 0 };
-  const now = Date.now();
+  .portrait{position:relative;justify-self:center;width:min(100%,430px)}
+  .portrait::before{content:"";position:absolute;inset:-26px;border-radius:44px;background:radial-gradient(closest-side, rgba(47,123,255,.55), transparent 72%);filter:blur(10px);z-index:0}
+  .portrait .frame{position:relative;z-index:1;aspect-ratio:4/5;border-radius:28px;overflow:hidden;border:1px solid rgba(160,190,255,.35);box-shadow:0 40px 80px -30px rgba(0,0,0,.8)}
+  .portrait img.photo{width:100%;height:100%;object-fit:cover;object-position:50% 26%;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+  .portrait .frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(4,11,31,.82) 100%)}
+  .tag{position:absolute;z-index:3;display:flex;align-items:center;gap:9px;background:rgba(6,18,54,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);b[...]
+  .tag.top{top:18px;left:18px}
+  .tag i{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(61,220,151,.22)}
+  .name{position:absolute;z-index:3;left:20px;right:20px;bottom:18px}
+  .name strong{display:block;font-family:var(--display);font-size:1.3rem;font-weight:700;letter-spacing:-.01em}
+  .name span{font-size:.93rem;color:var(--soft)}
+  @keyframes rise{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
 
-  if (data.resetAt && data.resetAt <= now) {
-    current.delete(key);
-    return { key, blocked: false, state: null };
+  /* sections */
+  section{padding-block:96px}
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.7rem);line-height:1.1;letter-spacing:-.03em;color:#fff;margin:0 0 14px}
+  .sub{max-width:40rem;color:var(--muted);margin:0 0 44px;font-size:1.08rem}
+
+  /* chat */
+  #chat{padding-block:8px 24px;margin-top:-34px;position:relative;z-index:2}
+  .chat{max-width:820px;margin-inline:auto;background:linear-gradient(180deg,rgba(14,36,96,.85),rgba(7,21,54,.95));border:1px solid rgba(150,185,255,.28);border-radius:26px;overflow:hidden;box-sha[...]
+  .chat-head{display:flex;align-items:center;gap:14px;padding:18px 22px;background:linear-gradient(120deg,#123B9E,#2F7BFF);color:#fff}
+  .chat-head img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.8)}
+  .chat-head strong{display:block;font-family:var(--display);font-size:1.08rem;font-weight:700;line-height:1.25}
+  .chat-head span{display:flex;align-items:center;gap:7px;font-size:.88rem;color:#DCE8FF}
+  .chat-head span::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .log{height:min(54vh,440px);min-height:310px;overflow-y:auto;padding:24px 22px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+  .msg{max-width:84%;padding:12px 17px;border-radius:18px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;font-size:1rem}
+  .msg.bot{align-self:flex-start;background:rgba(255,255,255,.075);border:1px solid var(--line);color:var(--text);border-bottom-left-radius:5px}
+  .msg.user{align-self:flex-end;background:linear-gradient(135deg,#3C86FF,#1B58D6);color:#fff;border-bottom-right-radius:5px}
+  .msg.user a{color:#fff}
+  .msg.note{align-self:center;max-width:94%;background:rgba(255,210,63,.08);border:1px dashed rgba(255,210,63,.55);color:#FFE49A;font-size:.94rem;text-align:center}
+  .typing{display:inline-flex;gap:5px;padding:5px 0}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--blue-soft);opacity:.4;animation:blink 1.1s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+  @keyframes blink{50%{opacity:1}}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;padding:0 22px 18px}
+  .chips button{font:500 .93rem var(--body);color:var(--soft);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:8px 15px;cursor:pointer}
+  .chips button:hover{border-color:var(--gold);color:#fff;background:rgba(255,210,63,.1)}
+  .composer{display:flex;gap:10px;padding:16px 18px;border-top:1px solid var(--line);background:rgba(4,11,31,.55)}
+  .composer input{flex:1;min-width:0;font:inherit;padding:14px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.06);color:#fff}
+  .composer input::placeholder{color:var(--muted)}
+  .composer input:focus{outline:none;border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(47,123,255,.3)}
+  .composer button{font:600 1rem var(--body);color:#07163F;background:var(--gold);border:0;border-radius:12px;padding:0 26px;cursor:pointer}
+  .composer button:hover{background:#FFE07A}
+  .composer button:disabled,.composer input:disabled{opacity:.55;cursor:not-allowed}
+  .fine{max-width:820px;margin:16px auto 0;font-size:.9rem;color:var(--muted);text-align:center}
+
+  /* projects */
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+  .card{grid-column:span 2;position:relative;padding:30px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));transition[...]
+  .card.big{grid-column:span 3}
+  .card:hover{border-color:rgba(141,182,255,.6);transform:translateY(-3px)}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;font-weight:600;color:var(--soft);background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding[...]
+  .pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold)}
+  .pill.live::before{background:var(--green)}
+  .card h3{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.02em;margin:0 0 10px;color:#fff}
+  .card h3 a{color:inherit;text-decoration:none}
+  .card h3 a:hover{text-decoration:underline;text-underline-offset:5px}
+  .card p{margin:0;color:var(--muted);font-size:1rem}
+
+  /* connect list */
+  .connect{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .connect div{display:flex;gap:18px;align-items:center;padding:22px 24px;border-radius:18px;border:1px solid var(--line);background:var(--glass)}
+  .connect svg{flex:none;width:52px;height:52px;padding:13px;border-radius:14px;border:1.5px solid rgba(255,210,63,.7);color:var(--gold);fill:none;stroke:currentColor;stroke-width:1.7;stroke-line[...]
+  .connect p{margin:0;font-weight:500;color:var(--text)}
+
+  /* time bar */
+  .split{display:flex;height:70px;border-radius:16px;overflow:hidden;margin:4px 0 22px;border:1px solid var(--line)}
+  .split div{display:flex;align-items:center;padding-left:18px;font-family:var(--display);font-weight:700;font-size:1.05rem}
+  .split .s1{flex:30;background:linear-gradient(120deg,#2F7BFF,#1B58D6);color:#fff}
+  .split .s2{flex:25;background:#14419F;color:#fff}
+  .split .s3{flex:25;background:#0F327C;color:#fff}
+  .split .s4{flex:20;background:var(--gold);color:#07163F}
+  .split-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;font-size:.95rem;color:var(--muted);margin:0 0 64px}
+  .split-notes b{display:block;color:#fff;font-weight:600;margin-bottom:2px}
+  .habits{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .habits div{padding:26px 28px;border-radius:20px;border:1px solid var(--line);background:var(--glass)}
+  .habits h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:0 0 8px;color:#fff;letter-spacing:-.01em}
+  .habits p{margin:0;color:var(--muted);font-size:.98rem}
+
+  /* closing */
+  .cta{padding-block:40px 96px}
+  .cta .box{text-align:center;padding:72px 28px;border-radius:30px;border:1px solid rgba(150,185,255,.28);background:radial-gradient(700px 300px at 50% 0%, rgba(47,123,255,.45), transparent 70%),[...]
+  .cta h2{font-size:clamp(2rem,4.4vw,3.2rem);margin-bottom:12px}
+  .cta p{color:var(--soft);max-width:34rem;margin:0 auto 30px}
+  .cta .actions{justify-content:center}
+  footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);font-size:.92rem}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+  footer a{color:var(--soft)}
+
+  @media (max-width:860px){
+    .hero{padding-block:44px 80px}
+    .hero .wrap{grid-template-columns:1fr;gap:44px}
+    .portrait{width:min(86%,360px);order:-1}
+    .bar nav a.t{display:none}
+    .facts div{padding-right:18px;margin-right:18px}
+    .grid{grid-template-columns:1fr}
+    .card,.card.big{grid-column:auto}
+    .connect{grid-template-columns:1fr}
+    .split-notes{grid-template-columns:1fr 1fr}
+    .habits{grid-template-columns:1fr}
+    section{padding-block:68px}
+  }
+  .brand,.btn.sm{white-space:nowrap}
+  @media (max-width:480px){
+    .brand{font-size:.95rem;gap:9px}
+    .brand img{width:32px;height:32px}
+    .btn.sm{padding:9px 14px;font-size:.88rem}
+    .facts{gap:18px 0}
+    .facts div{border-right:0;margin-right:0;padding-right:30px}
+    .msg{max-width:92%}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .portrait img.photo,.typing i{animation:none}
+    .card{transition:none}.card:hover{transform:none}
+    .typing i{opacity:.7}
   }
 
-  return { key, blocked: Boolean(data.resetAt && data.resetAt > now), state: data };
-}
-
-function setFailedAttempt(request) {
-  const key = `${LOCKOUT_PREFIX}:${getClientKey(request)}`;
-  const current = globalThis.__pinLockoutMap || new Map();
-  globalThis.__pinLockoutMap = current;
-
-  const state = current.get(key) || { attempts: 0, resetAt: 0 };
-  state.attempts += 1;
-
-  if (state.attempts >= 5) {
-    state.resetAt = Date.now() + 60000;
+  /* upgrade: scroll experience */
+  .progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:40;background:var(--gold);transform:scaleX(0);transform-origin:0 50%}
+  .bar nav a.t.on{color:#fff;box-shadow:0 2px 0 var(--gold)}
+  @keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+  .hero .wrap>div:first-child>*{animation:up .9s cubic-bezier(.2,.7,.2,1) both}
+  .hero .wrap>div:first-child>:nth-child(2){animation-delay:.12s}
+  .hero .wrap>div:first-child>:nth-child(3){animation-delay:.24s}
+  .hero .wrap>div:first-child>:nth-child(4){animation-delay:.36s}
+  .portrait{transform:translateY(var(--py,0px));will-change:transform}
+  .grid{display:block}
+  .card,.card.big{display:grid;grid-template-columns:1fr auto;column-gap:36px;align-items:end;position:sticky;top:calc(88px + var(--i,0)*16px);margin-bottom:26px;padding:34px;background:linear-gr[...]
+  .card:hover{transform:none}
+  .card>.pill,.card>h3,.card>p{grid-column:1}
+  .card>.pill{justify-self:start}
+  .card .go{grid-column:2;grid-row:1/4;align-self:end;white-space:nowrap}
+  .go{display:inline-flex;align-items:center;justify-content:center;font:600 .98rem var(--body);text-decoration:none;color:#07163F;background:var(--gold);border-radius:12px;padding:13px 24px;tran[...]
+  .go:hover{background:#FFE07A}
+  .go.off{background:transparent;color:var(--muted);border:1px dashed var(--line);font-weight:500}
+  .js .split{clip-path:inset(0 calc(100% - var(--fill,100%)) 0 0 round 16px)}
+  @media (max-width:860px){
+    .card,.card.big{grid-template-columns:1fr;padding:26px;top:calc(80px + var(--i,0)*12px)}
+    .card .go{grid-column:1;grid-row:auto;justify-self:start;margin-top:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .hero .wrap>div:first-child>*{animation:none}
+    .portrait{transform:none}
+    .card,.card.big{position:static}
   }
 
-  current.set(key, state);
-}
+  /* pass 2: chat is the one peak; type and spacing floor */
+  section{padding-block:clamp(56px,9vw,96px)}
+  #chat{padding-block:8px clamp(64px,10vw,120px)}
+  .chat{transform:scale(calc(.94 + var(--cp,1)*.06));transform-origin:50% 0;box-shadow:0 40px 90px -30px rgba(47,123,255,calc(.25 + var(--cp,1)*.4)),0 0 0 6px rgba(47,123,255,calc(.03 + var(--cp,[...]
+  .card p{max-width:62ch}
+  .lede,.sub{max-width:60ch}
+  h1,h2{text-wrap:balance}
+  @media (prefers-reduced-motion:reduce){.chat{transform:none}}
 
-function clearPinLockout(request) {
-  const key = `${LOCKOUT_PREFIX}:${getClientKey(request)}`;
-  const current = globalThis.__pinLockoutMap || new Map();
-  globalThis.__pinLockoutMap = current;
-  current.delete(key);
-}
+  /* pass 3: motion */
+  .hero .wrap{position:relative;z-index:1}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;animation:drift 16s ease-in-out infinite alternate}
+  .hero::before{width:520px;height:520px;right:-140px;top:-180px;background:radial-gradient(circle,rgba(47,123,255,.55),transparent 66%)}
+  .hero::after{width:420px;height:420px;left:-120px;bottom:-160px;background:radial-gradient(circle,rgba(255,210,63,.20),transparent 66%);animation-duration:20s;animation-direction:alternate-reve[...]
+  @keyframes drift{to{transform:translate(-60px,50px) scale(1.15)}}
+  .portrait{transform:perspective(900px) translateY(var(--py,0px)) rotateY(var(--hx,0deg)) rotateX(var(--hy,0deg))}
+  .js .rv{opacity:0;transform:translateY(46px);filter:blur(6px);transition:opacity .8s,transform .9s cubic-bezier(.2,.7,.2,1),filter .8s;transition-delay:var(--d,0ms)}
+  .js .rv.in{opacity:1;transform:none;filter:none}
+  .card,.card.big,.card:hover{transform:perspective(1100px) rotateX(calc(var(--rx,0deg) + var(--ty,0deg))) rotateY(var(--tx,0deg)) scale(var(--s,1));transform-origin:50% 0;filter:brightness(var(-[...]
+  .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--gx,50%) var(--gy,0%),rgba(255,255,255,.13),transpare[...]
+  .marquee{overflow:hidden;border-block:1px solid var(--line);padding:20px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,t[...]
+  .track{display:flex;width:max-content;animation:slide 40s linear infinite}
+  .marquee:hover .track{animation-play-state:paused}
+  .track span{margin-right:14px;white-space:nowrap;font:600 .95rem var(--body);color:var(--soft);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:9px 18px}
+  .track span:empty{display:none}
+  @keyframes slide{to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){
+    .hero::before,.hero::after,.track{animation:none}
+    .portrait,.card,.card.big,.card:hover{transform:none;filter:none}
+    .js .rv{opacity:1;transform:none;filter:none;transition:none}
+    .chat{transform:none}
+  }
 
-function delay(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
+  /* editor */
+  #edlink{display:block;width:140px;height:26px;margin:6px auto 0;border-bottom:2px dotted rgba(147,165,207,.3)}
+  #edlink:hover{border-bottom-color:rgba(147,165,207,.6)}
+  .split2{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .split2 img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:24px;border:1px solid var(--line)}
+  .split2 .sub{margin:0}
+  .tools{display:none}
+  body.editing .tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .card>.tools{grid-column:1/-1;margin:16px 0 0}
+  .tools button,#edbar button,#edbar select{font:600 .88rem var(--body);color:#fff;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+  #edbar button#save{background:var(--gold);color:#07163F;border:0}
+  body.editing [contenteditable]{outline:1.5px dashed rgba(255,210,63,.6);outline-offset:4px;cursor:text}
+  body.editing .portrait{cursor:pointer}
+  #edbar{position:fixed;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom));z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;p[...]
+  #edbar select option{color:#000}
+  #msg{font-size:.85rem;color:var(--soft)}
+  #pin{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(2,6,20,.75);padding:20px}
+  #pin form{width:min(340px,100%);padding:26px;border-radius:20px;background:#0B2154;border:1px solid var(--line);display:grid;gap:14px}
+  #pin input{font:inherit;font-size:1.1rem;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff}
+  #pin p{margin:0;color:var(--gold);font-size:.9rem;min-height:1.2em}
+  #edbar[hidden],#pin[hidden]{display:none}
+  @media (max-width:860px){.split2{grid-template-columns:1fr;gap:28px}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
 
-export async function onRequestGet({ env }) {
-  const v = env.CONTENT ? await env.CONTENT.get('site') : null;
-  if (!v) {
-    return new Response(JSON.stringify(DEFAULT_CONTENT), {
-      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHB[...]
+    <nav aria-label="Main">
+      <a class="t" href="#work">Work</a>
+      <a class="t" href="#connect">Work with me</a>
+      <a class="t" href="#how">How I build</a>
+      <a class="btn gold sm" href="#chat">Ask the assistant</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>AI systems that take over the work you repeat by hand.</h1>
+        <p class="lede">I'm Anthony, an AI automation specialist and full stack developer in Port Harcourt. I build private AI systems and automations for the bookings, follow-ups, payments and r[...]
+        <div class="actions">
+          <a class="btn gold" href="#chat">Ask the assistant</a>
+          <a class="btn ghost" href="https://stellaxafe.com/Anthony" target="_blank" rel="noopener">View my portfolio</a>
+        </div>
+        <div class="facts">
+          <div><b>3 months</b><span>Amara, solo to live</span></div>
+          <div><b>200+</b><span>WhatsApp messages in month one</span></div>
+          <div><b>500+</b><span>LinkedIn followers</span></div>
+        </div>
+      </div>
+      <div class="portrait">
+        <div class="frame">
+          <img class="photo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKCh[...]
+        </div>
+        <div class="tag top"><i></i>Open to remote work</div>
+        <div class="name"><strong>Anthony Nwobosi</strong><span>AI Automation Specialist and Full Stack Developer</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="chat" aria-labelledby="chat-title">
+    <div class="wrap">
+      <div class="chat" role="region" aria-label="Chat with Anthony's AI assistant">
+        <div class="chat-head">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgo[...]
+          <div>
+            <strong id="chat-title">Anthony's AI assistant</strong>
+            <span>Answers from his CV and build notes</span>
+          </div>
+        </div>
+        <div class="log" id="log" role="log" aria-live="polite">
+          <div class="msg bot">Hi, I'm Anthony's AI assistant. Ask me about his projects, how he builds with AI, or how to work with him.</div>
+        </div>
+        <div class="chips" id="chips">
+          <button type="button">What has Anthony built?</button>
+          <button type="button">How does he keep AI-written code reliable?</button>
+          <button type="button">How can I work with him?</button>
+        </div>
+        <form class="composer" id="form" autocomplete="off">
+          <label for="text" style="position:absolute;left:-9999px">Your message</label>
+          <input id="text" name="text" type="text" placeholder="Type your question" maxlength="500">
+          <button type="submit" id="send">Send</button>
+        </form>
+      </div>
+      <p class="fine">This is an AI assistant and it can get things wrong. To confirm details or start a conversation, email <a href="mailto:anthony@stellaxafe.com">anthony@stellaxafe.com</a>.</p[...]
+    </div>
+  </section>
+
+  <div class="marquee" aria-label="Tools Anthony works with"><div class="track"><span>Claude Code</span><span>Make</span><span>n8n</span><span>Zapier</span><span>Supabase</span><span>Paystack</sp[...]
+
+  <section id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <h2 id="work-title">What I've built</h2>
+      <p class="sub">Products real businesses use. I build them with AI coding agents, and I direct the work and check every result.</p>
+      <div class="grid">
+        <article class="card big" style="--i:0">
+          <span class="pill live">Live</span>
+          <h3>Amara</h3>
+          <p>A guest experience and CRM tool for hotels. An unhappy guest scans a QR code and reports the problem privately while still on site. The manager gets a WhatsApp alert straight away an[...]
+          <a class="go" href="https://amara.ng" target="_blank" rel="noopener">Open Amara</a>
+        </article>
+        <article class="card big" style="--i:1">
+          <span class="pill">Built in one month</span>
+          <h3>StellaXafe Platform</h3>
+          <p>A private AI for one company at a time. Five agents work in sequence: they interview staff, read their understanding back to them, then build the Word, PDF, Slides or Excel file. A W[...]
+          <a class="go" href="https://stellaxafe.com" target="_blank" rel="noopener">Visit StellaXafe</a>
+        </article>
+        <article class="card" style="--i:2">
+          <span class="pill">Ongoing</span>
+          <h3>XALOM</h3>
+          <p>A trust passport for the digital market in Africa. A seller verifies once and gets a record that grows with each closed deal and honest review. Buyers can check it before they pay.</[...]
+          <a class="go" href="https://xalom.stellaxafe.com" target="_blank" rel="noopener">Open XALOM</a>
+        </article>
+        <article class="card" style="--i:3">
+          <span class="pill">In testing</span>
+          <h3>Shomea</h3>
+          <p>Hears a Bible reference the moment a preacher says it and puts the verse on screen. Runs offline with nobody operating it.</p>
+          <a class="go" href="https://github.com/billiondollarprof" target="_blank" rel="noopener">View on GitHub</a>
+        </article>
+        <article class="card" style="--i:4">
+          <span class="pill live">Delivered</span>
+          <h3>FAVCOV Dental</h3>
+          <p>Booking automation built with Make.com and Google Workspace. It logs each booking, emails the patient and the doctor, and sends a reminder 24 hours before the visit.</p>
+          <span class="go off">Private client build</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="connect" aria-labelledby="connect-title" style="padding-top:20px">
+    <div class="wrap">
+      <h2 id="connect-title">Let's connect and build</h2>
+      <p class="sub">Get in touch if any of these sound like you.</p>
+      <div class="connect">
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/></svg><p>You're building with AI and need scoped, private AI systems</p></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11.5V16c0 1.2 2.2 3 5 3s5-1.8 5-3v-4.5"/></svg><p>You want to learn how to use AI tools effec[...]
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><p>You're interested in building safety guardra[...]
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/></svg><p>You want to build real products, not just use AI</p></div>
+        <div style="grid-column:1/-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="[...]
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title">Where the time goes on a build</h2>
+      <p class="sub">Most of the work happens before any code is written.</p>
+      <div class="split" role="img" aria-label="Planning 30 percent, interface 25 percent, backend 25 percent, testing 20 percent">
+        <div class="s1">30%</div><div class="s2">25%</div><div class="s3">25%</div><div class="s4">20%</div>
+      </div>
+      <div class="split-notes">
+        <div><b>Planning and research</b>The hardest part. Once I can picture how a non-technical person will use it daily, the project is nearly done.</div>
+        <div><b>Interface</b>Designed for every screen size.</div>
+        <div><b>Backend</b>APIs, tool calling and the first pass of the logic.</div>
+        <div><b>Testing</b>Edge cases, then fixes to the interface and flow.</div>
+      </div>
+      <div class="habits">
+        <div>
+          <h3>Agents test their own work</h3>
+          <p>Rule files make each AI agent click through the flows and screenshot the interface across screen sizes before I review anything.</p>
+        </div>
+        <div>
+          <h3>Add lines, don't rewrite</h3>
+          <p>When something already works, I have the AI add only the new lines. If it breaks, the cause is easy to find and I can revert.</p>
+        </div>
+        <div>
+          <h3>Duplicates stopped in the database</h3>
+          <p>For anything that costs money or must happen once, like a message or a payout, I set a database rule. A retry then can't send or spend twice.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="custom"></div>
+
+  <div class="cta">
+    <div class="wrap">
+      <div class="box">
+        <h2>Have something to automate?</h2>
+        <p>Tell me what your team repeats by hand and I'll tell you what can run on its own.</p>
+        <div class="actions">
+          <a class="btn gold" href="mailto:anthony@stellaxafe.com">Email Anthony</a>
+          <a class="btn ghost" href="https://www.linkedin.com/in/anthony-nwobosi-575b3717a" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Anthony Nwobosi. Port Harcourt, Nigeria (WAT, UTC+1).</span>
+    <span><a href="https://stellaxafe.com/Anthony" target="_blank" rel="noopener">Portfolio</a> &nbsp; <a href="https://github.com/billiondollarprof" target="_blank" rel="noopener">GitHub</a></sp[...]
+  </div>
+<a href="#" id="edlink" aria-label="Admin"></a>
+</footer>
+
+<script>
+(()=>{
+  const r=document.documentElement;r.classList.add('js');
+  const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const prog=document.getElementById('prog'),portrait=document.querySelector('.portrait'),split=document.querySelector('.split'),chat=document.querySelector('.chat');
+  let queued=false;
+  let cards=[...document.querySelectorAll('.card')];
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  function frame(){
+    queued=false;
+    const y=scrollY,max=r.scrollHeight-innerHeight;
+    prog.style.transform='scaleX('+(max>0?y/max:0)+')';
+    if(!rm&&y<innerHeight)portrait.style.setProperty('--py',(y*.1)+'px');
+    const t=split.getBoundingClientRect().top;
+    const p=Math.min(1,Math.max(0,(innerHeight*.9-t)/(innerHeight*.45)));
+    r.style.setProperty('--fill',(rm?100:p*100)+'%');
+    cards=[...document.querySelectorAll('.card')];
+    cards.forEach((c,i)=>{
+      const r0=c.getBoundingClientRect(),e=clamp((innerHeight-r0.top)/(innerHeight*.45),0,1),n=cards[i+1];
+      const cov=n?clamp(1-(n.getBoundingClientRect().top-r0.top-16)/r0.height,0,1):0;
+      c.style.setProperty('--rx',(rm?0:(1-e)*16+cov*5)+'deg');
+      c.style.setProperty('--s',rm?1:1-cov*.05);
+      c.style.setProperty('--b',rm?1:1-cov*.3);
     });
+    const c=chat.getBoundingClientRect().top;
+    r.style.setProperty('--cp',rm?1:Math.min(1,Math.max(0,(innerHeight-c)/(innerHeight*.55))));
   }
-
-  try {
-    const parsed = JSON.parse(v);
-    return new Response(JSON.stringify(parsed), {
-      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
-    });
-  } catch {
-    return new Response(JSON.stringify({ error: 'Stored content is invalid. Reset it or reload the page.', ...DEFAULT_CONTENT }), {
-      status: 500,
-      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
-    });
+  addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(frame)}},{passive:true});
+  addEventListener('resize',frame);frame();
+  const links=[...document.querySelectorAll('.bar nav a.t')];
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id));
+  }),{rootMargin:'-45% 0px -50% 0px'});
+  ['work','connect','how'].forEach(id=>io.observe(document.getElementById(id)));
+  const rv=[...document.querySelectorAll('h2,.sub,.split-notes>div,.habits>div,.connect>div,.cta .box,.fine')];
+  rv.forEach(el=>{el.classList.add('rv');el.style.setProperty('--d',[...el.parentNode.children].indexOf(el)*90+'ms')});
+  const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.15});
+  rv.forEach(el=>ro.observe(el));
+  if(matchMedia('(pointer:fine)').matches&&!rm){
+    document.addEventListener('pointermove',ev=>{const c=ev.target.closest&&ev.target.closest('.card');if(!c||document.body.classList.contains('editing'))return;
+      const r=c.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width,y=(ev.clientY-r.top)/r.height;
+      c.style.setProperty('--tx',(x-.5)*8+'deg');c.style.setProperty('--ty',-(y-.5)*6+'deg');
+      c.style.setProperty('--gx',x*100+'%');c.style.setProperty('--gy',y*100+'%');c.style.setProperty('--ga',1)});
+    document.addEventListener('pointerout',ev=>{const c=ev.target.closest&&ev.target.closest('.card');if(!c||c.contains(ev.relatedTarget))return;
+      c.style.setProperty('--tx','0deg');c.style.setProperty('--ty','0deg');c.style.setProperty('--ga',0)});
+    const hero=document.querySelector('.hero');
+    hero.addEventListener('pointermove',ev=>{const b=hero.getBoundingClientRect();
+      portrait.style.setProperty('--hx',((ev.clientX-b.left)/b.width-.5)*14+'deg');
+      portrait.style.setProperty('--hy',-((ev.clientY-b.top)/b.height-.5)*10+'deg')});
+    hero.addEventListener('pointerleave',()=>{portrait.style.setProperty('--hx','0deg');portrait.style.setProperty('--hy','0deg')});
   }
-}
+  if(!rm)document.querySelectorAll('.facts b').forEach(b=>{
+    const m=b.textContent.match(/^(\d+)(.*)$/);if(!m)return;
+    const n=+m[1],suf=m[2],t0=performance.now()+500;
+    (function step(t){const p=clamp((t-t0)/1400,0,1);b.textContent=Math.round(n*(1-Math.pow(1-p,3)))+suf;if(p<1)requestAnimationFrame(step)})(performance.now());
+  });
+})();
+</script>
+<script>
+  const WEBHOOK_PATH = '/api/chat';
+  const MAX_MESSAGE_CHARS = 1000;
+  const MAX_HISTORY_CHARS = 6000;
 
-export async function onRequestPost({ request, env }) {
-  const pin = request.headers.get('x-pin') || '';
-  const isCheck = new URL(request.url).searchParams.has('check');
-  const lockState = getLockoutState(request);
+  const log = document.getElementById('log');
+  const form = document.getElementById('form');
+  const input = document.getElementById('text');
+  const send = document.getElementById('send');
+  const chips = document.getElementById('chips');
+  const history = [];
 
-  if (isCheck && lockState.blocked) {
-    const remainingMs = Math.max(1, lockState.state.resetAt - Date.now());
-    await delay(1000);
-    return json({ error: `Too many wrong PIN attempts. Try again in ${Math.ceil(remainingMs / 1000)} seconds.`, retryAfter: Math.ceil(remainingMs / 1000) }, 429);
-  }
-
-  if (!env.EDIT_PASSWORD || !env.CONTENT || !sameText(pin, String(env.EDIT_PASSWORD))) {
-    if (isCheck) {
-      setFailedAttempt(request);
+  function linkify(el, text){
+    const re = /(https?:\/\/[^\s)]+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+    let last = 0, m;
+    while ((m = re.exec(text)) !== null){
+      el.append(text.slice(last, m.index));
+      const a = document.createElement('a');
+      const isMail = m[0].includes('@') && !m[0].startsWith('http');
+      a.href = isMail ? 'mailto:' + m[0] : m[0];
+      if (!isMail){ a.target = '_blank'; a.rel = 'noopener'; }
+      a.textContent = m[0];
+      el.append(a);
+      last = m.index + m[0].length;
     }
-    await delay(1000);
-    const postLock = getLockoutState(request);
-    if (postLock.blocked) {
-      const remainingMs = Math.max(1, postLock.state.resetAt - Date.now());
-      return json({ error: `Too many wrong PIN attempts. Try again in ${Math.ceil(remainingMs / 1000)} seconds.`, retryAfter: Math.ceil(remainingMs / 1000) }, 429);
+    el.append(text.slice(last));
+  }
+
+  function addMessage(kind, text){
+    const d = document.createElement('div');
+    d.className = 'msg ' + kind;
+    linkify(d, text);
+    log.append(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
+  }
+
+  function showTyping(){
+    const d = document.createElement('div');
+    d.className = 'msg bot';
+    d.innerHTML = '<span class="typing" aria-label="The assistant is typing"><i></i><i></i><i></i></span>';
+    log.append(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
+  }
+
+  function setBusy(b){ input.disabled = b; send.disabled = b; }
+
+  function composeHistoryText(){
+    return history
+      .map(h => (h.role === 'user' ? 'Visitor: ' : 'Assistant: ') + h.text)
+      .join('\n')
+      .slice(-MAX_HISTORY_CHARS);
+  }
+
+  async function ask(text){
+    text = (text || '').trim();
+    if (!text) return;
+
+    const limitedText = text.slice(0, MAX_MESSAGE_CHARS);
+    chips.hidden = true;
+    addMessage('user', limitedText);
+    history.push({ role: 'user', text: limitedText });
+    input.value = '';
+    setBusy(true);
+    const typing = showTyping();
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+
+    try {
+      const body = new URLSearchParams({
+        message: limitedText,
+        history: composeHistoryText()
+      });
+
+      const res = await fetch(WEBHOOK_PATH, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+        signal: controller.signal
+      });
+
+      const raw = await res.text();
+      let reply = raw;
+      try { const json = JSON.parse(raw); reply = json.reply || json.text || json.message || raw; } catch (_) {}
+
+      if (!res.ok || !String(reply).trim()) {
+        throw new Error('empty');
+      }
+
+      const finalReply = String(reply).trim();
+      typing.remove();
+      addMessage('bot', finalReply);
+      history.push({ role: 'bot', text: finalReply });
+    } catch (err) {
+      typing.remove();
+      addMessage('note', 'I could not get a reply. Please email anthony@stellaxafe.com and I will answer directly.');
+    } finally {
+      clearTimeout(timer);
+      setBusy(false);
+      input.focus();
     }
-    return json({ error: 'Wrong password or server not set up' }, 401);
   }
 
-  if (isCheck) {
-    clearPinLockout(request);
-    return json({ ok: true });
-  }
+  form.addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
+  chips.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') ask(e.target.textContent); });
+</script>
+<script>
+  // Paste your Make webhook URL between the quotes, then redeploy.
+  // (Now handled server-side at /api/chat)
 
-  const body = await request.text();
-  if (body.length > 4000000) return json({ error: 'Too large' }, 413);
-  try {
-    const d = JSON.parse(body);
-    if (!d || typeof d !== 'object') throw 0;
-  } catch {
-    return json({ error: 'Bad data' }, 400);
+  const API='/api/content';
+  const SEL='h1,.lede,h2,.sub,.card h3,.card p,.habits h3,.habits p,.connect p,.cta p';
+  const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const base=$$(SEL);
+  let data={texts:{},photo:'',sections:[]},pin='',editing=false,dirty=false;
+  const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+  const safeUrl=u=>/^(https?:\/\/|mailto:)/i.test(u||'')?u:'';
+  const ce=e=>{try{e.contentEditable='plaintext-only'}catch(_){e.contentEditable='true'}};
+  const PH="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect width="800" height="600" fill="#0B2154"/><text x="400" y="310" fill="#8DB6FF'+'" font-size="28" text-anchor="middle">Image</text></svg>');
+  const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.15});
+  function tools(list){const d=el('div','tools');list.forEach(([a,l])=>{const b=el('button',null,l);b.type='button';b.dataset.a=a;d.append(b)});return d}
+  function photos(){if(data.photo)$$('.brand img,img.photo,.chat-head img').forEach(i=>i.src=data.photo)}
+  function render(){
+    const box=$('#custom');box.replaceChildren();
+    data.sections.forEach((s,si)=>{
+      const sec=el('section','cs'),w=el('div','wrap');sec.dataset.si=si;sec.append(w);
+      if(editing){const t=[['up','Move up'],['down','Move down'],['del','Delete section']];
+        if(s.type==='cards')t.push(['card','Add card']);if(s.type==='image')t.push(['img','Change image']);w.append(tools(t))}
+      const h=el('h2',null,s.title||'');h.dataset.f='title';w.append(h);
+      if(s.type==='cards'){
+        const g=el('div','grid');
+        (s.items||[]).forEach((it,ii)=>{
+          const c=el('article','card big');c.style.setProperty('--i',ii);c.dataset.ii=ii;
+          const t=el('h3',null,it.t||''),b=el('p',null,it.b||'');t.dataset.f='t';b.dataset.f='b';c.append(t,b);
+          const u=safeUrl(it.u);
+          if(it.l&&u){const a=el('a','go',it.l);a.href=u;a.target='_blank';a.rel='noopener';c.append(a)}
+          if(editing)c.append(tools([['link','Button'],['del','Delete card']]));
+          g.append(c)});
+        w.append(g);
+      }else{
+        const p=el('p','sub',s.body||'');p.dataset.f='body';
+        if(s.type==='image'){const g=el('div','split2'),im=el('img');im.src=s.img||PH;im.alt='';g.append(im,p);w.append(g)}
+        else w.append(p);
+      }
+      box.append(sec);
+    });
+    $$('#custom h2,#custom .sub,#custom .split2').forEach(e=>{e.classList.add('rv');editing?e.classList.add('in'):io.observe(e)});
+    if(editing)$$('#custom [data-f]').forEach(ce);
+    dispatchEvent(new Event('scroll'));
   }
-
-  clearPinLockout(request);
-  await env.CONTENT.put('site', body);
-  return json({ ok: true });
-}
+  function apply(){base.forEach((e,i)=>{const t=data.texts['t'+i];if(typeof t==='string'&&t)e.textContent=t});photos();render()}
+  function say(m){$('#msg').textContent=m}
+  function pick(cb){
+    const f=el('input');f.type='file';f.accept='image/*';
+    f.onchange=()=>{const file=f.files[0];if(!file)return;const r=new FileReader();
+      r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');
+        c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        cb(c.toDataURL('image/jpeg',.85));dirty=true};im.src=r.result};r.readAsDataURL(file)};
+    f.click();
+  }
+  function setEditing(){
+    editing=true;document.body.classList.add('editing');$('#edbar').hidden=false;
+    base.forEach(ce);$$('.rv').forEach(e=>e.classList.add('in'));render();
+  }
+  // load saved content
+  fetch(API,{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(d=>{data=Object.assign(data,d||{});apply()}).catch(()=>{});
+  // unlock
+  $('#edlink').addEventListener('click',e=>{e.preventDefault();$('#pin').hidden=false;$('#pininput').focus()});
+  $('#pincancel').onclick=()=>{$('#pin').hidden=true};
+  $('#pinform').addEventListener('submit',async e=>{
+    e.preventDefault();const p=$('#pininput').value;$('#pinmsg').textContent='Checking...';
+    try{const r=await fetch(API+'?check=1',{method:'POST',headers:{'x-pin':p},body:'{}'});
+      if(!r.ok)throw 0;pin=p;$('#pin').hidden=true;$('#pininput').value='';$('#pinmsg').textContent='';setEditing()}
+    catch(_){$('#pinmsg').textContent='Wrong password, or the server is not set up yet.'}
+  });
+  // edit bar
+  $('#addsec').onclick=()=>{const t=$('#addtype').value;
+    data.sections.push(t==='cards'?{type:t,title:'New section',items:[{t:'Card title',b:'Describe it here.',l:'',u:''},{t:'Card title',b:'Describe it here.',l:'',u:''}]}
+      :{type:t,title:'New section',body:'Write your text here.',img:''});
+    dirty=true;render();say('Section added at the bottom. Edit it, then Save.')};
+  $('#chphoto').onclick=()=>pick(u=>{data.photo=u;photos();say('Photo changed. Press Save.')});
+  $('.portrait').addEventListener('click',()=>{if(editing)$('#chphoto').click()});
+  $('#exit').onclick=()=>{if(!dirty||confirm('Leave without saving?')){dirty=false;location.reload()}};
+  $('#save').onclick=async()=>{say('Saving...');
+    try{const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-pin':pin},body:JSON.stringify(data)});
+      if(!r.ok)throw 0;dirty=false;say('Saved. Everyone sees it now.')}catch(_){say('Could not save. Try again.')}};
+  // typing, section tools
+  document.addEventListener('input',e=>{if(!editing)return;const t=e.target;dirty=true;
+    const sec=t.closest&&t.closest('.cs');
+    if(sec&&t.dataset.f){const s=data.sections[+sec.dataset.si],c=t.closest('.card');
+      if(c)s.items[+c.dataset.ii][t.dataset.f]=t.textContent;else s[t.dataset.f]=t.textContent}
+    else{const i=base.indexOf(t);if(i>-1)data.texts['t'+i]=t.textContent}});
+  document.addEventListener('keydown',e=>{if(editing&&e.key==='Enter'&&e.target.isContentEditable)e.preventDefault()});
+  document.addEventListener('click',e=>{if(editing&&e.target.closest('a.go,.cta a,.hero a'))e.preventDefault()},true);
+  $('#custom').addEventListener('click',e=>{
+    const b=e.target.closest('button[data-a]');if(!b)return;e.preventDefault();
+    const sec=b.closest('.cs'),si=+sec.dataset.si,s=data.sections[si],c=b.closest('.card'),a=b.dataset.a,S=data.sections;
+    if(a==='del'&&c)s.items.splice(+c.dataset.ii,1);
+    else if(a==='del'){if(!confirm('Delete this section?'))return;S.splice(si,1)}
+    else if(a==='up'&&si>0)[S[si-1],S[si]]=[S[si],S[si-1]];
+    else if(a==='down'&&si<S.length-1)[S[si+1],S[si]]=[S[si],S[si+1]];
+    else if(a==='card')s.items.push({t:'Card title',b:'Describe it here.',l:'',u':''});
+    else if(a==='link'&&c){const it=s.items[+c.dataset.ii],l=prompt('Button text (leave empty to remove the button)',it.l||'');if(l===null)return;it.l=l;
+      if(l){const u=prompt('Button link',it.u||'https://');if(u===null)return;it.u=u}}
+    else if(a==='img')return pick(u=>{s.img=u;render()});
+    dirty=true;render()});
+  addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+})();
+</script>
+<div id="edbar" hidden><select id="addtype" aria-label="Section type"><option value="text">Text section</option><option value="cards">3D cards section</option><option value="image">Image + text s[...]
+<div id="pin" hidden><form id="pinform"><label for="pininput">Password</label><input id="pininput" type="password" autocomplete="current-password"><div><button class="go">Unlock</button> <button [...]
+<script>
+(() => {
+  const API = '/api/content';
+  const SEL = 'h1,.lede,h2,.sub,.card h3,.card p,.habits h3,.habits p,.connect p,.cta p';
+})();
+</script>
+</body>
+</html>
