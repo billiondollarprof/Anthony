@@ -2,6 +2,35 @@
 // Needs: KV binding named CONTENT, and a secret/variable named EDIT_PASSWORD.
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 
+const DEFAULT_CONTENT = {
+  photo: '',
+  texts: {},
+  sections: [
+    {
+      type: 'cards',
+      title: 'What I built',
+      items: [
+        { t: 'Amara', b: 'Guest experience and automated CRM for hotels.', l: 'Amara', u: 'https://amara.ng' },
+        { t: 'StellaXafe Platform', b: 'Private, company-scoped AI for staff and operations.', l: 'StellaXafe', u: 'https://stellaxafe.com' },
+        { t: 'XALOM', b: 'Trust passport for the digital market in Africa.', l: 'XALOM', u: 'https://xalom.stellaxafe.com' },
+        { t: 'SHOMEA', b: 'Offline speech recognition for Bible references.', l: 'Listening test', u: 'https://shomea.pages.dev/dev' }
+      ]
+    }
+  ],
+  links: {
+    email: 'mailto:anthony@stellaxafe.com',
+    linkedin: 'https://www.linkedin.com/in/anthony-nwobosi-575b3717a',
+    github: 'https://github.com/billiondollarprof',
+    introVideo: 'https://www.loom.com/share/4b0e53e4adf34e7e9d2a3f2855e251ff',
+    stellaVideo: 'https://www.loom.com/share/6b6fba9e53a24ac795f73a9df820e72f',
+    amara: 'https://amara.ng',
+    stellaxafe: 'https://stellaxafe.com',
+    shomea: 'https://shomea.pages.dev/dev',
+    xalom: 'https://xalom.stellaxafe.com'
+  }
+};
+
+const LOCKOUT_PREFIX = 'pin-lockout';
 function sameText(a, b) {
   const x = new TextEncoder().encode(a), y = new TextEncoder().encode(b);
   let d = x.length ^ y.length;
@@ -9,21 +38,115 @@ function sameText(a, b) {
   return d === 0;
 }
 
-export async function onRequestGet({ env }) {
+function getClientKey(request) {
+  return request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for') ||
+    request.headers.get('x-real-ip') ||
+    'anonymous';
+}
+
+function getLockoutState(request) {
+  const key = `${LOCKOUT_PREFIX}:${getClientKey(request)}`;
+  const current = globalThis.__pinLockoutMap || new Map();
+  globalThis.__pinLockoutMap = current;
+
+  const data = current.get(key) || { attempts: 0, resetAt: 0 };
+  const now = Date.now();
+
+  if (data.resetAt && data.resetAt <= now) {
+    current.delete(key);
+    return { key, blocked: false, state: null };
+  }
+
+  return { key, blocked: Boolean(data.resetAt && data.resetAt > now), state: data };
+}
+
+function setFailedAttempt(request) {
+  const key = `${LOCKOUT_PREFIX}:${getClientKey(request)}`;
+  const current = globalThis.__pinLockoutMap || new Map();
+  globalThis.__pinLockoutMap = current;
+
+  const state = current.get(key) || { attempts: 0, resetAt: 0 };
+  state.attempts += 1;
+
+  if (state.attempts >= 5) {
+    state.resetAt = Date.now() + 60000;
+  }
+
+  current.set(key, state);
+}
+
+function clearPinLockout(request) {
+  const key = `${LOCKOUT_PREFIX}:${getClientKey(request)}`;
+  const current = globalThis.__pinLockoutMap || new Map();
+  globalThis.__pinLockoutMap = current;
+  current.delete(key);
+}
+
+function delay(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+export async function onRequestGet({ request, env }) {
   const v = env.CONTENT ? await env.CONTENT.get('site') : null;
-  return new Response(v || '{}', { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
+  if (!v) {
+    return new Response(JSON.stringify(DEFAULT_CONTENT), {
+      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
+    });
+  }
+
+  try {
+    const parsed = JSON.parse(v);
+    return new Response(JSON.stringify(parsed), {
+      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
+    });
+  } catch {
+    return new Response(JSON.stringify({ error: 'Stored content is invalid. Reset it or reload the page.', ...DEFAULT_CONTENT }), {
+      status: 500,
+      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
+    });
+  }
 }
 
 export async function onRequestPost({ request, env }) {
   const pin = request.headers.get('x-pin') || '';
+  const isCheck = new URL(request.url).searchParams.has('check');
+  const lockState = getLockoutState(request);
+
+  if (isCheck && lockState.blocked) {
+    const remainingMs = Math.max(1, lockState.state.resetAt - Date.now());
+    await delay(1000);
+    return json({ error: `Too many wrong PIN attempts. Try again in ${Math.ceil(remainingMs / 1000)} seconds.`, retryAfter: Math.ceil(remainingMs / 1000) }, 429);
+  }
+
   if (!env.EDIT_PASSWORD || !env.CONTENT || !sameText(pin, String(env.EDIT_PASSWORD))) {
-    await new Promise(r => setTimeout(r, 1000));
+    if (isCheck) {
+      setFailedAttempt(request);
+    }
+    await delay(1000);
+    const postLock = getLockoutState(request);
+    if (postLock.blocked) {
+      const remainingMs = Math.max(1, postLock.state.resetAt - Date.now());
+      return json({ error: `Too many wrong PIN attempts. Try again in ${Math.ceil(remainingMs / 1000)} seconds.`, retryAfter: Math.ceil(remainingMs / 1000) }, 429);
+    }
     return json({ error: 'Wrong password or server not set up' }, 401);
   }
-  if (new URL(request.url).searchParams.has('check')) return json({ ok: true });
+
+  if (isCheck) {
+    clearPinLockout(request);
+    return json({ ok: true });
+  }
+
   const body = await request.text();
   if (body.length > 4000000) return json({ error: 'Too large' }, 413);
-  try { const d = JSON.parse(body); if (!d || typeof d !== 'object') throw 0; } catch { return json({ error: 'Bad data' }, 400); }
+  try {
+    const d = JSON.parse(body);
+    if (!d || typeof d !== 'object') throw 0;
+  } catch {
+    return json({ error: 'Bad data' }, 400);
+  }
+
+  clearPinLockout(request);
   await env.CONTENT.put('site', body);
   return json({ ok: true });
-    }
+}
