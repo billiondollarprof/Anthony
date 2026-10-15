@@ -76,7 +76,14 @@
   .video-copy{display:flex;flex-direction:column;gap:12px}
   .video-copy h3{margin:0;color:#fff;font-family:var(--display);font-size:1.4rem;letter-spacing:-.02em}
   .video-copy p{margin:0;color:var(--muted)}
-  @media (max-width:860px){ .video-wrap{grid-template-columns:1fr} }
+  .links-row{display:flex;flex-wrap:wrap;gap:12px;padding:18px 0 0}
+  .links-row a{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);text-decoration:none;color:var(--soft)}
+  .links-row a:hover{border-color:rgba(141,182,255,.6);color:#fff}
+  .work-grid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:20px}
+  .how-card{padding:26px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+  .how-card h3{margin:0 0 8px 0;font-family:var(--display);font-size:1.2rem;color:#fff}
+  .how-card p{margin:0;color:var(--muted)}
+  @media (max-width:860px){ .video-wrap{grid-template-columns:1fr} .work-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -103,6 +110,13 @@
         <div class="actions">
           <a class="btn gold" href="#chat">Ask the assistant</a>
           <a class="btn ghost" href="https://anthony.stellaxafe.com/" target="_blank" rel="noopener">View my portfolio</a>
+        </div>
+        <div class="links-row" aria-label="Main links">
+          <a href="mailto:anthony@stellaxafe.com">Email</a>
+          <a href="https://www.linkedin.com/in/anthony-nwobosi-575b3717a" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/billiondollarprof" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.loom.com/share/4b0e53e4adf34e7e9d2a3f2855e251ff" target="_blank" rel="noopener">Intro video</a>
+          <a href="https://www.loom.com/share/6b6fba9e53a24ac795f73a9df820e72f" target="_blank" rel="noopener">StellaXafe walkthrough</a>
         </div>
         <div class="facts">
           <div><b>3 months</b><span>Amara, solo to live</span></div>
@@ -164,6 +178,28 @@
 
   <div class="marquee" aria-label="Tools Anthony works with"><div class="track"><span>Claude Code</span><span>Make</span><span>n8n</span><span>Zapier</span><span>Supabase</span><span>Paystack</span><span>Google Workspace</span><span>TypeScript</span><span>Postgres</span><span>WhatsApp Business API</span></div></div>
 
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title">How I work</h2>
+      <p class="sub">I spec the work first. Then I direct AI agents to test their own output. I keep changes small and I work from code that already proved itself in real use.</p>
+      <div class="work-grid">
+        <div class="how-card">
+          <h3>Specs first</h3>
+          <p>I write the scope, user flow, and edge cases before I ask an agent to touch code.</p>
+        </div>
+        <div class="how-card">
+          <h3>Agents test their own work</h3>
+          <p>I set clear acceptance checks and ask the agent to verify the result before I review it.</p>
+        </div>
+        <div class="how-card">
+          <h3>Small changes on proven code</h3>
+          <p>If a flow already works, I add only the new lines. This makes bugs easier to isolate and easier to fix.</p>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:24px;">WAT (UTC+1), working hours overlap most of Europe.</p>
+    </div>
+  </section>
+
   <section id="work" aria-labelledby="work-title">
     <div class="wrap">
       <h2 id="work-title">What I've built</h2>
@@ -213,36 +249,6 @@
         <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><p>You're interested in building safety guards and real workflow checks around AI</p></div>
         <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/></svg><p>You want to build real products, not just use AI</p></div>
         <div style="grid-column:1/-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 11.5V15M14.5 13H19.5"/></svg><p>You're a founder, team lead, or ops person with a process that needs to move without manual mistakes</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="how" aria-labelledby="how-title">
-    <div class="wrap">
-      <h2 id="how-title">Where the time goes on a build</h2>
-      <p class="sub">Most of the work happens before any code is written.</p>
-      <div class="split" role="img" aria-label="Planning 30 percent, interface 25 percent, backend 25 percent, testing 20 percent">
-        <div class="s1">30%</div><div class="s2">25%</div><div class="s3">25%</div><div class="s4">20%</div>
-      </div>
-      <div class="split-notes">
-        <div><b>Planning and research</b>The hardest part. Once I can picture how a non-technical person will use it daily, the project is nearly done.</div>
-        <div><b>Interface</b>Designed for every screen size.</div>
-        <div><b>Backend</b>APIs, tool calling and the first pass of the logic.</div>
-        <div><b>Testing</b>Edge cases, then fixes to the interface and flow.</div>
-      </div>
-      <div class="habits">
-        <div>
-          <h3>Agents test their own work</h3>
-          <p>Rule files make each AI agent click through the flows and screenshot the interface across screen sizes before I review anything.</p>
-        </div>
-        <div>
-          <h3>Add lines, don't rewrite</h3>
-          <p>When something already works, I have the AI add only the new lines. If it breaks, the cause is easy to find and I can revert.</p>
-        </div>
-        <div>
-          <h3>Duplicates stopped in the database</h3>
-          <p>For anything that costs money or must happen once, like a message or a payout, I set a database rule. A retry then can't send or spend twice.</p>
-        </div>
       </div>
     </div>
   </section>
