@@ -1,91 +1,108 @@
-// Cloudflare Pages Function: /api/chat
-// Reads MAKE_WEBHOOK_URL and SITE_TOKEN from environment variables.
-// Allows only https://anthony.stellaxafe.com and forwards the request to the Make webhook.
-const ALLOWED_ORIGIN = 'https://anthony.stellaxafe.com';
-const jsonText = (body, status = 200, extraHeaders = {}) => new Response(body, {
-  status,
-  headers: {
-    'content-type': 'text/plain; charset=utf-8',
-    'access-control-allow-origin': ALLOWED_ORIGIN,
-    'access-control-allow-methods': 'POST, OPTIONS',
-    'access-control-allow-headers': 'Content-Type, X-Site-Token, Origin',
-    ...extraHeaders
-  }
-});
+<script>
+  const WEBHOOK_PATH = '/api/chat';
+  const MAX_MESSAGE_CHARS = 1000;
+  const MAX_HISTORY_CHARS = 6000;
 
-function sameText(a, b) {
-  const x = new TextEncoder().encode(a), y = new TextEncoder().encode(b);
-  let d = x.length ^ y.length;
-  for (let i = 0; i < Math.max(x.length, y.length); i++) d |= (x[i] || 0) ^ (y[i] || 0);
-  return d === 0;
-}
+  const log = document.getElementById('log');
+  const form = document.getElementById('form');
+  const input = document.getElementById('text');
+  const send = document.getElementById('send');
+  const chips = document.getElementById('chips');
+  const history = [];
 
-export async function onRequestOptions({ request }) {
-  const origin = request.headers.get('Origin');
-  if (origin && origin !== ALLOWED_ORIGIN) {
-    return jsonText('Forbidden', 403);
-  }
-  return jsonText('', 204, {
-    'access-control-allow-origin': ALLOWED_ORIGIN,
-    'access-control-allow-methods': 'POST, OPTIONS',
-    'access-control-allow-headers': 'Content-Type, X-Site-Token, Origin'
-  });
-}
-
-export async function onRequestPost({ request, env }) {
-  const origin = request.headers.get('Origin');
-  if (origin && origin !== ALLOWED_ORIGIN) {
-    return jsonText('Forbidden', 403);
+  function linkify(el, text){
+    const re = /(https?:\/\/[^\s)]+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+    let last = 0, m;
+    while ((m = re.exec(text)) !== null){
+      el.append(text.slice(last, m.index));
+      const a = document.createElement('a');
+      const isMail = m[0].includes('@') && !m[0].startsWith('http');
+      a.href = isMail ? 'mailto:' + m[0] : m[0];
+      if (!isMail){ a.target = '_blank'; a.rel = 'noopener'; }
+      a.textContent = m[0];
+      el.append(a);
+      last = m.index + m[0].length;
+    }
+    el.append(text.slice(last));
   }
 
-  const webhookUrl = env.MAKE_WEBHOOK_URL;
-  if (!webhookUrl) {
-    return jsonText('Server is not configured', 500);
+  function addMessage(kind, text){
+    const d = document.createElement('div');
+    d.className = 'msg ' + kind;
+    linkify(d, text);
+    log.append(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
   }
 
-  const siteToken = env.SITE_TOKEN;
-  if (!siteToken) {
-    return jsonText('Server is not configured', 500);
+  function showTyping(){
+    const d = document.createElement('div');
+    d.className = 'msg bot';
+    d.innerHTML = '<span class="typing" aria-label="The assistant is typing"><i></i><i></i><i></i></span>';
+    log.append(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
   }
 
-  let form;
-  try {
-    form = await request.formData();
-  } catch {
-    return jsonText('Bad request', 400);
+  function setBusy(b){ input.disabled = b; send.disabled = b; }
+
+  function composeHistoryText(){
+    return history
+      .map(h => (h.role === 'user' ? 'Visitor: ' : 'Assistant: ') + h.text)
+      .join('\n')
+      .slice(-MAX_HISTORY_CHARS);
   }
 
-  const message = String(form.get('message') || '').slice(0, 1000).trim();
-  const history = String(form.get('history') || '').slice(-6000);
-  const token = String(form.get('token') || '');
+  async function ask(text){
+    text = (text || '').trim();
+    if (!text) return;
 
-  if (!message && !history) {
-    return jsonText('No message was sent', 400);
+    const limitedText = text.slice(0, MAX_MESSAGE_CHARS);
+    chips.hidden = true;
+    addMessage('user', limitedText);
+    history.push({ role: 'user', text: limitedText });
+    input.value = '';
+    setBusy(true);
+    const typing = showTyping();
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+
+    try {
+      const body = new URLSearchParams({
+        message: limitedText,
+        history: composeHistoryText()
+      });
+
+      const res = await fetch(WEBHOOK_PATH, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+        signal: controller.signal
+      });
+
+      const raw = await res.text();
+      let reply = raw;
+      try { const json = JSON.parse(raw); reply = json.reply || json.text || json.message || raw; } catch (_) {}
+
+      if (!res.ok || !String(reply).trim()) {
+        throw new Error('empty');
+      }
+
+      const finalReply = String(reply).trim();
+      typing.remove();
+      addMessage('bot', finalReply);
+      history.push({ role: 'bot', text: finalReply });
+    } catch (err) {
+      typing.remove();
+      addMessage('note', 'I could not get a reply. Please email anthony@stellaxafe.com and I will answer directly.');
+    } finally {
+      clearTimeout(timer);
+      setBusy(false);
+      input.focus();
+    }
   }
 
-  if (!sameText(token, String(siteToken))) {
-    return jsonText('Invalid token', 401);
-  }
-
-  const upstreamBody = new URLSearchParams({ message, history, token: siteToken });
-
-  try {
-    const upstream = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-        'X-Site-Token': String(siteToken)
-      },
-      body: upstreamBody.toString()
-    });
-
-    const raw = await upstream.text();
-    const reply = raw && raw.trim() ? raw.trim() : 'No reply came back from the assistant.';
-
-    return jsonText(reply, upstream.ok ? 200 : upstream.status, {
-      'access-control-allow-origin': ALLOWED_ORIGIN
-    });
-  } catch {
-    return jsonText('The assistant is unavailable right now. Please email anthony@stellaxafe.com.', 502);
-  }
-}
+  form.addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
+  chips.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') ask(e.target.textContent); });
+</script>
