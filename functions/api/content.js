@@ -5,6 +5,18 @@ const json = (o, status = 200) => new Response(JSON.stringify(o), { status, head
 const DEFAULT_CONTENT = {
   photo: '',
   texts: {},
+  meta: {
+    title: 'Anthony Nwobosi | AI Automation Specialist',
+    description: 'Anthony Nwobosi builds private AI systems and automations that take over the work businesses repeat by hand.',
+    canonical: 'https://anthony.stellaxafe.com/',
+    ogUrl: 'https://anthony.stellaxafe.com/',
+    ogTitle: 'Anthony Nwobosi | AI Automation Specialist',
+    ogDescription: 'Private AI systems and automations for the work your team repeats by hand. Ask his AI assistant.'
+  },
+  videos: {
+    intro: 'https://www.loom.com/share/4b0e53e4adf34e7e9d2a3f2855e251ff',
+    stella: 'https://www.loom.com/share/6b6fba9e53a24ac795f73a9df820e72f'
+  },
   sections: [
     {
       type: 'cards',
@@ -87,7 +99,7 @@ function delay(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-export async function onRequestGet({ request, env }) {
+export async function onRequestGet({ env }) {
   const v = env.CONTENT ? await env.CONTENT.get('site') : null;
   if (!v) {
     return new Response(JSON.stringify(DEFAULT_CONTENT), {
