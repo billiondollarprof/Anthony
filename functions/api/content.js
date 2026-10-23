@@ -22,11 +22,16 @@ function problem(d) {
     for (const k of Object.keys(d.texts)) if (typeof d.texts[k] !== 'string') return 'texts must hold only text';
   }
   if (d.photo !== undefined && d.photo !== '' && !(typeof d.photo === 'string' && d.photo.startsWith('data:image/'))) return 'photo must be an image';
+  if (d.video !== undefined && d.video !== '' && !(typeof d.video === 'string' && d.video.length < 600 && /^https:\/\//.test(d.video))) return 'video must be a link';
+  const okImg = v => v === undefined || v === '' || (typeof v === 'string' && /^(data:image\/|https:\/\/)/.test(v));
+  if (!okImg(d.vthumb)) return 'thumbnail must be an image';
   if (d.sections !== undefined) {
     if (!Array.isArray(d.sections) || d.sections.length > 40) return 'sections must be a list of 40 or fewer';
     for (const s of d.sections) {
-      if (!isObj(s) || !['text', 'cards', 'image'].includes(s.type)) return 'unknown section type';
+      if (!isObj(s) || !['text', 'cards', 'image', 'article', 'video'].includes(s.type)) return 'unknown section type';
       if (s.type === 'cards' && !Array.isArray(s.items)) return 'cards section needs items';
+      if (s.type === 'video' && !okImg(s.thumb)) return 'thumbnail must be an image';
+      if (s.type === 'video' && s.url && !(typeof s.url === 'string' && s.url.length < 600 && /^https:\/\//.test(s.url))) return 'video must be a link';
     }
   }
   return '';
