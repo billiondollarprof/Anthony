@@ -342,6 +342,8 @@
   .vid iframe.ready,.vid video.ready{opacity:1}
   .vid.loading::after{content:"";position:absolute;z-index:4;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:var(--gold);animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
+  .vfall{position:absolute;z-index:5;right:12px;bottom:12px;font:600 .8rem var(--body);color:#fff;background:rgba(6,18,54,.78);border:1px solid var(--line);border-radius:999px;padding:6px 12px;text-decoration:none;opacity:.85}
+  .vfall:hover{opacity:1}
   .hero.off::before,.hero.off::after{animation-play-state:paused}
   /* v4: gold to white card edges, how we start */
   .card,.card.big,.habits>div,.connect>div{border:1.5px solid transparent;border-radius:22px;background:linear-gradient(180deg,#0F2457,#0A1A46) padding-box,linear-gradient(135deg,#FFD23F 0%,#FFE98A 38%,#FFFFFF 72%,#FFD23F 100%) border-box}
@@ -797,8 +799,8 @@ const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.targ
 function tools(list){const d=el('div','tools');list.forEach(([a,l])=>{const b=el('button',null,l);b.type='button';b.dataset.a=a;d.append(b)});return d}
 function mediaEl(u,t,auto){
   u=u||'';let m;
-  const fr=src=>{const f=el('iframe');f.src=src;f.title=t||'Video';f.allow='autoplay; fullscreen; picture-in-picture';f.allowFullscreen=true;f.loading='lazy';return f};
-  if(m=u.match(/loom\.com\/(?:share|embed)\/([a-f0-9]{32})/i))return fr('https://www.loom.com/embed/'+m[1]+(auto?'?autoplay=1&hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true':''));
+  const fr=src=>{const f=el('iframe');f.src=src;f.title=t||'Video';f.allow='autoplay; fullscreen; picture-in-picture';f.allowFullscreen=true;return f};
+  if(m=u.match(/loom\.com\/(?:share|embed)\/([a-f0-9]{32})/i))return fr('https://www.loom.com/embed/'+m[1]+(auto?'?autoplay=1':''));
   if(m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/i))return fr('https://www.youtube-nocookie.com/embed/'+m[1]+(auto?'?autoplay=1':''));
   if(m=u.match(/vimeo\.com\/(?:video\/)?(\d+)/i))return fr('https://player.vimeo.com/video/'+m[1]+(auto?'?autoplay=1':''));
   if(/^https:\/\//i.test(u)&&/\.(mp4|webm|mov)(\?|$)/i.test(u)){const v=el('video');v.controls=true;v.preload='metadata';v.playsInline=true;v.src=u;if(auto)v.autoplay=true;return v}
@@ -934,6 +936,7 @@ addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='
     m.addEventListener('load',ready);m.addEventListener('loadeddata',ready);
     setTimeout(ready,4500);
     box.append(m);
+    if(/^https:/.test(src)){const o=document.createElement('a');o.className='vfall';o.href=box.querySelector('.vplay')?box.querySelector('.vplay').href:src;o.target='_blank';o.rel='noopener';o.textContent='Open in new tab';box.append(o)}
   }
   document.addEventListener('click',e=>{
     if(document.body.classList.contains('editing'))return;
