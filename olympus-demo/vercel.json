@@ -1,0 +1,1 @@
+{"rewrites":[{"source":"/i/:file","destination":"https://cdn.jsdelivr.net/gh/billiondollarprof/Anthony@39f1acdc0cb4eab60be91588c2b82114988556ad/olympus-demo/img/:file"}],"headers":[{"source":"/i/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=31536000, immutable"}]}]}
