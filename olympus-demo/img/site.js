@@ -28,26 +28,30 @@ mq('#m1',['Night Club','Lounge','Taverna','Bottle Service','Live DJs','Karaoke']
 /* one scroll loop: progress bar, header, hero layers, parallax, marquee speed, scrub */
 const pg=$('#pg'),hdr=$('header'),hin=$('#hin'),l1=$('#ly1'),l2=$('#ly2'),pxs=$$('.px'),mqa=()=>$$('.mq>div').flatMap(d=>d.getAnimations());
 const stg=$('#night'),lys=$$('#stage .ly'),scs=$$('#stage .sc'),tls=[...$('#tl').children],cn=$('#cn'),hint=$('#hint'),wl=$('#wl'),N=lys.length;
-const sks=$$('.sk'),rgv=$('#rgv');let ly=scrollY,boost=1,last=-1,rgA=0,rgT=0,rgIn=0,rgY=scrollY;
-function frame(){const y=scrollY,vh=innerHeight,dh=document.documentElement.scrollHeight-vh;
- pg.style.transform=`scaleX(${dh>0?y/dh:0})`;hdr.classList.toggle('scd',y>10);
- if(!RM){
-  if(y<vh*1.2){hs.style.transform=`translateY(${y*.35}px)`;l1.style.transform=`translateY(${y*.2}px)`;l2.style.transform=`translateY(${y*.1}px)`;hin.style.transform=`translateY(${y*-.06}px)`;hin.style.opacity=Math.max(0,1-y/(vh*.8))}
-  pxs.forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom<-100||r.top>vh+100)return;const c=(r.top+r.height/2-vh/2)/vh;el.style.transform=`translateY(${(-c*100*(+el.dataset.s)).toFixed(1)}%)`});
-  boost+=(Math.min(1+Math.abs(y-ly)/12,5)-boost)*.2;ly=y;boost+=(1-boost)*.05;mqa().forEach(a=>a.playbackRate=boost);
+const sks=$$('.sk'),rgv=$('#rgv'),TOUCH=matchMedia('(hover:none)').matches;let ly=scrollY,boost=1,last=-1,rgA=0,rgT=0,rgIn=0,rgY=scrollY,lastY=-1,lastH=0,MQA=null;
+function frame(){const y=scrollY,vh=innerHeight,moved=y!==lastY||vh!==lastH;lastY=y;lastH=vh;
+ if(moved){const dh=document.documentElement.scrollHeight-vh;pg.style.transform=`scaleX(${dh>0?y/dh:0})`;hdr.classList.toggle('scd',y>10)}
+ if(!RM&&!TOUCH&&moved){
+  if(y<vh*1.2){hs.style.transform=`translate3d(0,${y*.35}px,0)`;l1.style.transform=`translate3d(0,${y*.2}px,0)`;l2.style.transform=`translate3d(0,${y*.1}px,0)`;hin.style.transform=`translate3d(0,${y*-.06}px,0)`;hin.style.opacity=Math.max(0,1-y/(vh*.8))}
+  const pr=pxs.map(el=>el.getBoundingClientRect());pxs.forEach((el,i)=>{const r=pr[i];if(r.bottom<-100||r.top>vh+100)return;const cc=(r.top+r.height/2-vh/2)/vh;el.style.transform=`translate3d(0,${(-cc*100*(+el.dataset.s)).toFixed(1)}%,0)`});
  }
- const r=stg.getBoundingClientRect();if(r.top<vh&&r.bottom>0){const p=Math.min(1,Math.max(0,-r.top/(r.height-vh))),f=p*(N-1);let k=0,wy=-1;
-  lys.forEach((im,i)=>{if(i){const t=Math.min(1,Math.max(0,(f-(i-1)-.2)/.6));im.style.clipPath=`inset(${(100-t*100).toFixed(2)}% 0 0 0)`;if(t>0&&t<1)wy=100-t*100;if(t>=.5)k=i;if(!RM)im.style.transform=`scale(${(1.12-.12*t).toFixed(3)})`}
-   else if(!RM)im.style.transform=`scale(${(1+.06*Math.min(1,f)).toFixed(3)})`});
-  wl.style.opacity=wy<0?0:1;if(wy>=0)wl.style.top=wy+'%';
-  tls.forEach((d,i)=>d.firstChild.style.setProperty('--f',Math.min(1,Math.max(0,f-i+.5)).toFixed(3)));
-  hint.classList.toggle('off',p>.9);
-  if(k!==last){last=k;scs.forEach((s,i)=>s.classList.toggle('on',i===k));tls.forEach((d,i)=>d.classList.toggle('on',i===k));cn.classList.add('fl');cn.textContent='0'+(k+1);void cn.offsetWidth;cn.classList.remove('fl')}}
- /* stacked cards: the one underneath shrinks and darkens as the next covers it */
- sks.forEach((c,i)=>{const n=sks[i+1];if(!n)return;const a=c.getBoundingClientRect(),b=n.getBoundingClientRect();if(a.bottom<-50||a.top>vh)return;const q=Math.min(1,Math.max(0,1-(b.top-a.top)/a.height));c.style.transform=RM?'':`scale(${(1-q*.07).toFixed(4)})`;c.style.setProperty('--p',(q*.55).toFixed(3))});
- /* ring: turns with scroll, drag, keys and a slow drift */
- if(rgIn){if(!RM)rgT+=(y-rgY)*.12+.05;rgY=y;rgA+=(rgT-rgA)*.08;ring.style.transform=`translateZ(${-RR}px) rotateY(${-rgA}deg)`;
-  rcs.forEach((c,i)=>{let d=((i*ST-rgA)%360+540)%360-180;c.style.setProperty('--dm',Math.min(.75,Math.abs(d)/150).toFixed(2))});
+ if(!RM&&!TOUCH){MQA=MQA||$$('.mq>div').flatMap(d=>d.getAnimations());const tb=Math.min(1+Math.abs(y-ly)/12,5);boost+=(tb-boost)*.2;boost+=(1-boost)*.05;ly=y;if(Math.abs(boost-(MQA[0]&&MQA[0].playbackRate||1))>.02)MQA.forEach(a=>a.playbackRate=boost)}
+ if(moved){
+  const r=stg.getBoundingClientRect();
+  const sr=sks.map(s=>s.getBoundingClientRect());
+  if(r.top<vh&&r.bottom>0){const p=Math.min(1,Math.max(0,-r.top/(r.height-vh))),f=p*(N-1);let k=0,wy=-1;
+   lys.forEach((im,i)=>{if(i){const t=Math.min(1,Math.max(0,(f-(i-1)-.2)/.6));im.style.clipPath=`inset(${(100-t*100).toFixed(2)}% 0 0 0)`;if(t>0&&t<1)wy=100-t*100;if(t>=.5)k=i;if(!RM)im.style.transform=`scale(${(1.12-.12*t).toFixed(3)})`}
+    else if(!RM)im.style.transform=`scale(${(1+.06*Math.min(1,f)).toFixed(3)})`});
+   wl.style.opacity=wy<0?0:1;if(wy>=0)wl.style.top=wy+'%';
+   tls.forEach((d,i)=>d.firstChild.style.setProperty('--f',Math.min(1,Math.max(0,f-i+.5)).toFixed(3)));
+   hint.classList.toggle('off',p>.9);
+   if(k!==last){last=k;scs.forEach((s,i)=>s.classList.toggle('on',i===k));tls.forEach((d,i)=>d.classList.toggle('on',i===k));cn.classList.add('fl');cn.textContent='0'+(k+1);void cn.offsetWidth;cn.classList.remove('fl')}}
+  /* stacked cards: the one underneath shrinks and darkens as the next covers it */
+  sks.forEach((c,i)=>{const n=sr[i+1];if(!n)return;const a=sr[i];if(a.bottom<-50||a.top>vh)return;const q=Math.min(1,Math.max(0,1-(n.top-a.top)/a.height));c.style.transform=RM?'':`scale(${(1-q*.07).toFixed(4)})`;c.style.setProperty('--p',(q*.55).toFixed(3))});
+ }
+ /* ring: slow drift, drag and keys; on desktop it also turns with the scroll */
+ if(rgIn){if(!RM){rgT+=.05;if(!TOUCH)rgT+=(y-rgY)*.12}rgY=y;const prev=rgA;rgA+=(rgT-rgA)*.08;if(Math.abs(rgA-prev)>.001){ring.style.transform=`translateZ(${-RR}px) rotateY(${-rgA}deg)`;
+  rcs.forEach((c,i)=>{let d=((i*ST-rgA)%360+540)%360-180;c.style.setProperty('--dm',Math.min(.75,Math.abs(d)/150).toFixed(2))})}
   const fi=((Math.round(rgA/ST)%nR)+nR)%nR;if(fi!==rgF){rgF=fi;rgc.textContent=GR[fi][1]+' · '+GR[fi][2]}}else rgY=y;
  requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
@@ -69,11 +73,13 @@ cf.addEventListener('pointerenter',e=>{if(e.pointerType=='mouse'){fHov=1;cplan()
 cf.addEventListener('pointerdown',e=>{fx=e.clientX;fMoved=0});cf.addEventListener('pointerup',e=>{if(fx===null)return;const d=e.clientX-fx;fx=null;if(Math.abs(d)>40){fMoved=1;cgo(fc+(d<0?1:-1));setTimeout(()=>fMoved=0,50)}});
 /* ring gallery */
 const GR0=[['front',600,'Night club','The front at night'],['bar',800,'The bar','Cocktails'],['taverna',800,'Taverna','Terrace dining'],['gymr',800,'Olympus Fitness','Strength floor'],['kettle',800,'Olympus Fitness','Training'],['ffr',600,'Fast Food','Confectionery'],['salon',800,'Salon','Sample photo'],['pharmacy',800,'Pharmacy','Sample photo'],['boutique',800,'Boutique','Sample photo'],['day',600,'Olympus by Day','New Road'],['club',800,'Dance floor','Sample photo'],['lounge',800,'The lounge','Sample photo']];const GR=GR0.map(g=>[g[0],g[2],g[3],g[1]]);
+const FP={front:'center 25%',bar:'52% 30%',kettle:'64% 20%',salon:'55% center',pharmacy:'50% center',club:'40% center',ffr:'center 45%',day:'center 60%'};
 const ring=$('#ring'),rgc=$('#rgc'),nR=GR.length,ST=360/nR;let RR=0,rgF=-1;
-GR.forEach((g,i)=>{const c=document.createElement('figure');c.className='rc';c.style.margin=0;c.innerHTML=`<img src="${IMG}${g[0]}-${g[3]}.webp" alt="${g[1]}" loading="lazy" decoding="async"${{front:' style="object-position:center 25%"',bar:' style="object-position:60% center"',salon:' style="object-position:55% center"'}[g[0]]||''}><span>${g[1]}<small>${g[2]}</small></span>`;ring.append(c)});
-const rcs=[...ring.children],rgSize=()=>{const w=rcs[0].offsetWidth;RR=Math.round(w/2/Math.tan(Math.PI/nR)*1.07);rcs.forEach((c,i)=>c.style.transform=`rotateY(${i*ST}deg) translateZ(${RR}px)`)};rgSize();addEventListener('resize',rgSize);
+GR.forEach((g,i)=>{const c=document.createElement('figure');c.className='rc';c.style.margin=0;c.innerHTML=`<img src="${IMG}${g[0]}-${g[3]}.webp" alt="${g[1]}" loading="lazy" decoding="async"${FP[g[0]]?` style="object-position:${FP[g[0]]}"`:''}><span>${g[1]}<small>${g[2]}</small></span>`;ring.append(c)});
+const rcs=[...ring.children],rgSize=()=>{const w=rcs[0].offsetWidth;RR=Math.round(w/2/Math.tan(Math.PI/nR)*1.07);rcs.forEach((c,i)=>c.style.transform=`rotateY(${i*ST}deg) translateZ(${RR}px)`)};rgSize();let rgW=innerWidth;addEventListener('resize',()=>{if(innerWidth!==rgW){rgW=innerWidth;rgSize()}});
+rgc.textContent=GR[0][1]+' · '+GR[0][2];rgF=0;ring.style.transform=`translateZ(${-RR}px)`;
 new IntersectionObserver(e=>{rgIn=e[0].isIntersecting},{rootMargin:'100px'}).observe(rgv);
-let rx=null;rgv.addEventListener('pointerdown',e=>{rx=e.clientX;rgv.setPointerCapture(e.pointerId)});rgv.addEventListener('pointermove',e=>{if(rx===null)return;rgT-=(e.clientX-rx)*.35;rx=e.clientX});rgv.addEventListener('pointerup',()=>{rx=null;rgT=Math.round(rgT/ST)*ST});rgv.addEventListener('pointercancel',()=>rx=null);
+let rx=null;rgv.addEventListener('pointerdown',e=>{rx=e.clientX;if(e.pointerType=='mouse')rgv.setPointerCapture(e.pointerId)});rgv.addEventListener('pointermove',e=>{if(rx===null)return;rgT-=(e.clientX-rx)*.35;rx=e.clientX});rgv.addEventListener('pointerup',()=>{rx=null;rgT=Math.round(rgT/ST)*ST});rgv.addEventListener('pointercancel',()=>rx=null);
 rgv.addEventListener('keydown',e=>{if(e.key=='ArrowLeft'){rgT=Math.round(rgT/ST)*ST-ST;e.preventDefault()}if(e.key=='ArrowRight'){rgT=Math.round(rgT/ST)*ST+ST;e.preventDefault()}});
 /* reviews */
 const RV=$$('.rcd'),rd=$('#rds');let ri=0;RV.forEach(()=>rd.append(document.createElement('i')));
@@ -101,7 +107,7 @@ $('#go').onclick=()=>{const er=$('#er');er.textContent='';
  st++;view()};
 $('#bkb').onclick=()=>{st--;$('#er').textContent='';view()};view();
 document.addEventListener('click',e=>{const a=e.target.closest('[data-b]');if(a){B.type=a.dataset.b;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==B.type));setTimeout(()=>glide($('#bt')),600)}});
-addEventListener('resize',()=>{glide($('#bt'));glide($('#bg'))});
+let gW=innerWidth;addEventListener('resize',()=>{if(innerWidth!==gW){gW=innerWidth;glide($('#bt'));glide($('#bg'))}});
 /* service menu on the hero button */
 const SV=[['A table','glass','Reserve a table','Club or lounge'],['VIP section','music','VIP booth','With bottle service'],['A room','pin','Book a room','On this site'],['Taverna order','glass','Taverna','Dinner or an order'],['Fast food order','glass','Fast food','Order ahead'],['Gym membership','gym','Gym','Membership or day pass'],['Salon appointment','pin','Salon','Book an appointment'],['Pharmacy enquiry','pin','Pharmacy','Ask what is in stock'],['An event','music','An event','Birthday or private party']];
 const sv=$('#sv'),svb=$('#svb');sv.insertAdjacentHTML('beforeend',SV.map((x,i)=>`<button type="button" role="menuitem" data-v="${i}"><span class="ic"></span><span><b>${x[2]}</b><br><small>${x[3]}</small></span></button>`).join(''));
