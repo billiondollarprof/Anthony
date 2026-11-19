@@ -9,7 +9,7 @@
 <link rel="icon" href="/i/logo-256.webp">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="/i/taverna-1600.webp" imagesrcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" media="(orientation:landscape)" href="/i/taverna-1600.webp" imagesrcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" imagesizes="100vw" fetchpriority="high"><link rel="preload" as="image" media="(orientation:portrait)" href="/i/front-1000.webp" imagesrcset="/i/front-600.webp 600w, /i/front-1000.webp 1000w" imagesizes="100vw" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0c0612;--bg2:#140a1f;--sf:#1a0f27;--tx:#f7f1e7;--mu:#ab9dbd;--ln:#2f2242;--gd:#e2b65a;--gd2:#f7dc95;--pu:#7b3fe4;--ink:#1a0d02;--hz:rgba(12,6,18,.88);--e:cubic-bezier(.22,.8,.2,1)}
@@ -61,8 +61,8 @@ header.scd{box-shadow:0 14px 30px -18px rgba(0,0,0,.7)}
 #mn>a:not(.btn):hover{background:var(--bg2)}#mn>a:not(.btn):hover::after{transform:translateX(4px) rotate(45deg)}#mn .btn{margin-top:6px;display:flex}
 /* hero: three layers */
 .hero{position:relative;overflow:hidden;color:#fff;min-height:calc(100svh - 62px);max-height:960px;display:flex;align-items:flex-end;background:#12061c}
-.hs{position:absolute;inset:-8% 0 0;will-change:transform}.hs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s}
-.hs img.on{opacity:1}.hs img.on,.hs img.out{animation:zi 7.5s ease-out forwards}.hs img.zo.on,.hs img.zo.out{animation-name:zo}
+.hs{position:absolute;inset:-8% 0 0;will-change:transform}.hs>*{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s}.hs picture img{width:100%;height:100%;object-fit:cover}
+.hs>.on{opacity:1}.hs>.on,.hs>.out{animation:zi 7.5s ease-out forwards}.hs>.zo.on,.hs>.zo.out{animation-name:zo}
 @keyframes zi{from{transform:scale(1)}to{transform:scale(1.14)}}@keyframes zo{from{transform:scale(1.14)}to{transform:scale(1)}}
 .hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(12,4,20,.5),rgba(30,8,48,.35) 32%,rgba(10,3,16,.94))}
 @media(min-width:900px){.hero::before{background:linear-gradient(90deg,rgba(10,3,16,.92),rgba(34,10,54,.55) 55%,rgba(20,6,30,.1))}}
@@ -73,7 +73,7 @@ header.scd{box-shadow:0 14px 30px -18px rgba(0,0,0,.7)}
 .orb.a{width:40vmax;height:40vmax;right:-12vmax;top:-10vmax;background:radial-gradient(#7b3fe4,transparent 65%)}
 .orb.b{width:26vmax;height:26vmax;left:30%;bottom:-12vmax;background:radial-gradient(#e2b65a,transparent 65%);opacity:.25}
 .wv{position:absolute;z-index:3;left:0;bottom:-1px;width:200%;height:90px;animation:dr 18s linear infinite;pointer-events:none}
-.hero .in{position:relative;z-index:4;max-width:1180px;margin:auto;width:100%;padding:0 20px 150px;will-change:transform,opacity}
+.hero .in{position:relative;z-index:4;max-width:1180px;margin:auto;width:100%;padding:0 20px 130px;will-change:transform,opacity}
 .hero .in>*{animation:up 1s var(--e) both}.hero .in>:nth-child(2){animation-delay:.1s}.hero .in>:nth-child(3){animation-delay:.2s}.hero .in>:nth-child(4){animation-delay:.3s}.hero .in>:nth-child(5){animation-delay:.4s}
 @keyframes up{from{opacity:0;transform:translateY(24px);filter:blur(8px)}}
 .hero h1,.hero p{text-shadow:0 2px 24px rgba(5,1,10,.7)}@media(min-width:900px){.hero h1{max-width:12ch}}
@@ -83,23 +83,24 @@ header.scd{box-shadow:0 14px 30px -18px rgba(0,0,0,.7)}
 @keyframes pgl{50%{box-shadow:0 0 22px 2px rgba(247,220,149,.22)}}
 .rb{display:block;width:70px;height:5px;border-radius:5px;background:var(--gd);margin:22px 0 16px}
 .hero p.lead{color:#fff;font-size:1.12rem;max-width:36ch;margin-bottom:26px;font-weight:500;opacity:.95}
-.cta{display:flex;gap:12px;flex-wrap:wrap}.cta .btn{flex:1 1 190px}.hero .cta .btn{flex:1 1 140px;padding:13px 16px}@media(min-width:900px){.cta .btn,.hero .cta .btn{flex:0 0 auto;padding:13px 26px}}
-.seg{position:absolute;z-index:5;right:20px;bottom:150px;display:flex;gap:5px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}.cta .btn,.cta .spl{flex:1 1 190px}@media(min-width:900px){.cta .btn,.cta .spl{flex:0 0 auto}}
+.spl{display:flex;border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 14px 26px -12px rgba(226,182,90,.7);background:linear-gradient(180deg,var(--gd2),var(--gd))}
+.spl .btn{flex:1;box-shadow:none;background:none;border-radius:16px 0 0 16px;padding-right:18px}
+.spl .car{width:56px;border:0;border-left:1.5px solid rgba(26,13,2,.22);background:none;color:var(--ink);cursor:pointer;border-radius:0 16px 16px 0;display:grid;place-items:center;flex-shrink:0}
+.spl .car svg{width:14px;height:14px;transition:transform .35s var(--e)}.spl .car[aria-expanded=true] svg{transform:rotate(180deg)}
+.spl .car:hover{background:rgba(255,255,255,.18)}
+#sv{position:fixed;z-index:92;width:min(320px,calc(100% - 32px));max-height:min(70vh,520px);overflow:auto;background:var(--sf);border:1px solid var(--ln);border-radius:22px;padding:8px;box-shadow:0 40px 80px -24px rgba(0,0,0,.85);opacity:0;transform:translateY(-8px) scale(.97);transform-origin:top left;pointer-events:none;visibility:hidden;transition:opacity .25s,transform .35s var(--e),visibility 0s .35s}
+#sv.up{transform-origin:bottom left;transform:translateY(8px) scale(.97)}
+#sv.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .25s,transform .35s var(--e)}
+#sv small{display:block;padding:8px 12px 4px;font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gd)}
+#sv button{display:flex;width:100%;align-items:center;gap:12px;font:inherit;font-weight:600;color:var(--tx);background:none;border:0;padding:11px 12px;border-radius:14px;cursor:pointer;text-align:left}
+#sv button:hover,#sv button:focus-visible{background:var(--bg2)}#sv button .ic{width:34px;height:34px;border-radius:11px}#sv button .ic svg{width:17px;height:17px}
+#sv button span:last-child small{display:inline;padding:0;font-size:.8rem;font-weight:500;letter-spacing:0;text-transform:none;color:var(--mu)}
+.seg{position:absolute;z-index:5;right:20px;bottom:104px;display:flex;gap:5px}
 .seg i{width:22px;height:4px;border-radius:4px;background:rgba(255,255,255,.4);position:relative;overflow:hidden}
 .seg i.on::after{content:"";position:absolute;inset:0;background:var(--gd2);transform-origin:left;animation:sg 5.2s linear forwards}@keyframes sg{from{transform:scaleX(0)}}
 /* quick actions */
-/* booking bar in the hero */
-.hb{position:relative;z-index:7;max-width:1140px;width:calc(100% - 32px);margin:-92px auto 0;display:grid;grid-template-columns:1.25fr 1.1fr .8fr auto;align-items:stretch;gap:6px;padding:10px;border-radius:26px;background:color-mix(in srgb,var(--sf) 80%,transparent);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 40px 60px -30px rgba(0,0,0,.85)}
-.hb::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:linear-gradient(120deg,var(--gd),transparent 40%,transparent 60%,var(--pu));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-.hb .f{padding:8px 14px;border-radius:18px;transition:background .25s;min-width:0}.hb .f:hover,.hb .f:focus-within{background:var(--bg2)}
-.hb .f+.f{border-left:1px solid var(--ln)}
-.hb label{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gd);margin:0 0 2px}
-.hb input,.hb select{border:0;background:transparent;padding:0;min-height:30px;font-weight:700;border-radius:0}.hb input:focus,.hb select:focus{box-shadow:none}
-.hb select option{background:var(--sf)}
-.hb .btn{min-height:58px;border-radius:18px;padding:0 26px}
-.hbt{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--mu);padding:2px 12px 0}.hbt b{color:var(--tx)}
-@media(max-width:860px){.hero{min-height:calc(86svh - 62px)}.hb{grid-template-columns:1fr 1fr;margin-top:-104px}.hb .f:first-child{grid-column:1/-1}.hb .f+.f{border-left:0}.hb .f:nth-child(3){border-left:1px solid var(--ln)}.hb .f:first-child{border-bottom:1px solid var(--ln);border-radius:18px 18px 0 0}.hb .btn{grid-column:1/-1;min-height:52px}}
-.qa{max-width:1180px;margin:18px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;position:relative;z-index:6}
+.qa{max-width:1180px;margin:-38px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;position:relative;z-index:6}
 @media(max-width:900px){.qa{grid-template-columns:1fr 1fr}}
 .q{display:flex;flex-direction:column;gap:10px;background:var(--sf);border:1px solid var(--ln);border-radius:24px;padding:18px;text-decoration:none;box-shadow:0 30px 40px -30px rgba(0,0,0,.8);transition:transform .3s,border-color .3s}
 .q:hover{border-color:var(--gd)}.q b{display:block}.q small{color:var(--mu)}
@@ -144,7 +145,7 @@ header.scd{box-shadow:0 14px 30px -18px rgba(0,0,0,.7)}
 .cfc>*{transition:opacity .4s,transform .4s var(--e)}.cfc.sw>*{opacity:0;transform:translateY(10px)}
 /* services: sticky cards that stack */
 .stk{display:grid;gap:30px;margin-top:34px;padding-bottom:20px}
-.sk{position:sticky;top:calc(78px + var(--i)*16px);display:grid;grid-template-columns:1.1fr 1fr;height:min(580px,calc(100svh - 120px));background:var(--sf);border:1px solid var(--ln);border-radius:34px;overflow:hidden;box-shadow:0 -20px 50px -30px rgba(0,0,0,.8),0 40px 60px -40px rgba(0,0,0,.9);transform-origin:50% 0;will-change:transform}
+.sk{position:sticky;top:calc(78px + var(--i)*12px);display:grid;grid-template-columns:1.1fr 1fr;height:min(580px,calc(100svh - 120px));background:var(--sf);border:1px solid var(--ln);border-radius:34px;overflow:hidden;box-shadow:0 -20px 50px -30px rgba(0,0,0,.8),0 40px 60px -40px rgba(0,0,0,.9);transform-origin:50% 0;will-change:transform}
 .sk::after{content:"";position:absolute;inset:0;background:#05020a;opacity:var(--p,0);pointer-events:none;z-index:5;border-radius:inherit}
 .skm{position:relative;overflow:hidden;min-height:0}
 .skm>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -157,7 +158,7 @@ header.scd{box-shadow:0 14px 30px -18px rgba(0,0,0,.7)}
 .skt .no{font-size:.8rem;font-weight:800;letter-spacing:.2em;color:var(--gd)}.skt h3{font-size:clamp(1.6rem,3.6vw,2.6rem);font-weight:800;letter-spacing:-.035em}
 .skt p{color:var(--mu)}.skt ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.95rem}.skt li::before{content:"\2726  ";color:var(--gd)}
 .skt .btn{align-self:flex-start;margin-top:6px}
-@media(max-width:820px){.sk{grid-template-columns:1fr;grid-template-rows:44% 1fr;top:calc(72px + var(--i)*12px);height:min(640px,calc(100svh - 96px))}.skt{gap:8px;padding:20px 20px 22px;justify-content:flex-start}.skt ul{font-size:.88rem;gap:3px}.sks{width:30%;right:12px;bottom:12px}.skt p{font-size:.93rem}}
+@media(max-width:820px){.sk{grid-template-columns:1fr;grid-template-rows:42% 1fr;top:calc(70px + var(--i)*8px);height:min(620px,calc(100svh - 140px))}.skt{gap:8px;padding:20px 20px 22px;justify-content:flex-start}.skt ul{font-size:.88rem;gap:3px}.sks{width:30%;right:12px;bottom:12px}.skt p{font-size:.93rem}}
 /* ring gallery: cards on a circular track */
 .rg{position:relative;overflow:hidden;background:#09040f;color:#fff;padding:88px 0 70px}
 .rg .lead{color:#c7bad6}
@@ -302,7 +303,7 @@ footer b{color:var(--gd);letter-spacing:.22em}
 #ts{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:99;font-size:.9rem;opacity:0;pointer-events:none;transition:.3s}#ts.on{opacity:1}
 /* one reveal, used everywhere: rise out of blur */
 .js .rv{opacity:0;transform:translateY(30px);filter:blur(8px);transition:opacity .9s var(--e),transform .9s var(--e),filter .9s var(--e);transition-delay:var(--d,0s)}.js .rv.in{opacity:1;transform:none;filter:none}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none;filter:none}.hs img.on{opacity:1}.sc{transition:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none;filter:none}.hs>.on{opacity:1}.sc{transition:none}}
 </style>
 </head>
 <body>
@@ -322,7 +323,7 @@ footer b{color:var(--gd);letter-spacing:.22em}
 
 <main id="top">
 <section class="hero">
- <div class="hs" id="hs"><img class="on" src="/i/taverna-1600.webp" srcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" sizes="100vw" alt="" fetchpriority="high" decoding="async"></div>
+ <div class="hs" id="hs"><picture class="on"><source media="(orientation:portrait)" srcset="/i/front-600.webp 600w, /i/front-1000.webp 1000w" sizes="100vw"><img src="/i/taverna-1600.webp" srcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" sizes="100vw" alt="" fetchpriority="high" decoding="async" style="object-position:center 30%"></picture></div>
  <div class="lyr" id="ly1"><span class="orb a"></span><span class="orb b"></span></div>
  <div class="lyr" id="ly2">
   <svg class="cv" viewBox="0 0 2880 90" preserveAspectRatio="none" fill="none" stroke="rgba(247,220,149,.7)" stroke-width="2"><path d="M0 45Q360 0 720 45T1440 45T2160 45T2880 45"/></svg>
@@ -334,17 +335,11 @@ footer b{color:var(--gd);letter-spacing:.22em}
   <h1>You Only<br><span class="gt">Live Once.</span></h1>
   <i class="rb"></i>
   <p class="lead">The club, the lounge, Taverna, a gym and a kitchen share one address on New Road, Sapele.</p>
-  <div class="cta"><a class="btn" href="#book">Reserve a table</a><a class="btn gh" href="https://www.instagram.com/olympus_lifestyle.ng" target="_blank" rel="noopener"><i data-i="ig"></i>Follow on Instagram</a></div>
+  <div class="cta"><div class="spl"><a class="btn" href="#book" data-b="A table">Reserve a table</a><button class="car" id="svb" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sv" aria-label="Book something else"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M1 3.5h10L6 9.5z"/></svg></button></div><a class="btn gh" href="https://wa.me/2348032575150?text=Hello%20Olympus%2C%20I%27d%20like%20to%20book%20a%20room." target="_blank" rel="noopener"><i data-i="wa"></i>Book a room on WhatsApp</a></div>
  </div>
  <div class="seg" id="sg"></div>
  <span class="grain"></span>
 </section>
-<form class="hb" id="hb" aria-label="Start a booking">
- <div class="f"><label for="hbt">I want to book</label><select id="hbt"><option>A table</option><option>VIP section</option><option>Bottle service</option><option>A room</option><option>An event</option><option>Gym membership</option></select></div>
- <div class="f"><label for="hbd">Date</label><input id="hbd" type="date"></div>
- <div class="f"><label for="hbg">Guests</label><select id="hbg"><option>2</option><option>4</option><option>6</option><option>8</option><option>10+</option></select></div>
- <button class="btn" type="submit">Continue booking</button>
-</form>
 
 <div class="qa">
  <a class="q tl3" href="#book"><span class="ic"><i data-i="glass"></i></span><span><b>Reserve a table</b><small>Tables and bottle service</small></span></a>
@@ -356,8 +351,8 @@ footer b{color:var(--gd);letter-spacing:.22em}
 
 <section id="about" class="w two">
  <div class="stackd rv">
-  <div class="im"><img class="px" data-s=".12" src="/i/gold-800.webp" srcset="/i/gold-800.webp 800w, /i/gold-1200.webp 1200w" sizes="(max-width:860px) 92vw, 560px" alt="The Olympus building on New Road, Sapele, by day" loading="lazy" decoding="async"></div>
-  <div class="fl2 px" data-s="-.18"><img src="/i/night-560.webp" alt="Olympus Night Club at night" loading="lazy" decoding="async"></div>
+  <div class="im"><img class="px" data-s=".12" src="/i/day-1000.webp" srcset="/i/day-600.webp 600w, /i/day-1000.webp 1000w" sizes="(max-width:860px) 92vw, 560px" alt="The Olympus building on New Road, Sapele, by day" style="object-position:center 60%" loading="lazy" decoding="async"></div>
+  <div class="fl2 px" data-s="-.18"><img src="/i/front-600.webp" alt="Olympus Night Club at night" loading="lazy" decoding="async"></div>
   <div class="fl"><b>4.5★</b><span><small>Google rating</small><small>53 reviews</small></span></div>
  </div>
  <div class="rv" style="--d:.1s">
@@ -386,29 +381,35 @@ footer b{color:var(--gd);letter-spacing:.22em}
 
 <section id="services" class="w" style="padding-top:40px">
  <span class="ey rv">On site</span>
- <h2 class="hl rv">Five places, one address.</h2>
+ <h2 class="hl rv">Eight places, one address.</h2>
  <p class="lead rv">Scroll and each one slides over the last.</p>
  <div class="stk" id="stk">
-  <article class="sk" style="--i:0"><div class="skm"><img src="/i/night-1000.webp" srcset="/i/night-560.webp 560w, /i/night-1000.webp 1000w" sizes="(max-width:820px) 94vw, 600px" alt="Olympus Night Club lit up at night" loading="lazy" decoding="async" style="object-position:center 30%"><div class="gch"><span>Wednesday</span><span>Friday</span><span>Sunday</span></div></div>
-   <div class="skt"><span class="no">01 · NIGHT CLUB AND LOUNGE</span><h3>Olympus Night Club</h3><p>Resident DJs, hype men on the mic and live percussion on the big nights.</p><ul><li>Tables and bottle service</li><li>VIP section on request</li><li>Champions League match nights in the lounge</li></ul><a class="btn" href="#book" data-b="A table">Reserve a table</a></div></article>
-  <article class="sk" style="--i:1"><div class="skm"><img src="/i/taverna-1600.webp" srcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" sizes="(max-width:820px) 94vw, 640px" alt="Taverna by Olympus terrace" loading="lazy" decoding="async"><div class="sks"><img src="/i/food-800.webp" alt="" loading="lazy" decoding="async"></div><div class="gch"><span>Dinner</span><span>Karaoke night</span></div></div>
-   <div class="skt"><span class="no">02 · RESTAURANT</span><h3>Taverna by Olympus</h3><p>Food and drinks on the terrace, a good place to start the night.</p><ul><li>Karaoke night at Taverna</li><li>Menus posted on @taverna_by_olympus_</li></ul><a class="btn" href="#book" data-b="A table">Book Taverna</a></div></article>
-  <article class="sk" style="--i:2"><div class="skm"><img src="/i/gym-800.webp" alt="Olympus Fitness gym floor" loading="lazy" decoding="async"><div class="sks"><img src="/i/class-800.webp" alt="" loading="lazy" decoding="async"></div><div class="gch"><span>Strength floor</span><span>Classes</span></div></div>
-   <div class="skt"><span class="no">03 · GYM</span><h3>Olympus Fitness</h3><p>Train in the day, come back for the night.</p><ul><li>Free weights and machines</li><li>Group step classes on the forecourt</li><li>Ask about day passes and monthly plans</li></ul><a class="btn" href="#book" data-b="Gym membership">Ask about membership</a></div></article>
-  <article class="sk" style="--i:3"><div class="skm"><img src="/i/food-1600.webp" srcset="/i/food-800.webp 800w, /i/food-1600.webp 1600w" sizes="(max-width:820px) 94vw, 640px" alt="Olympus fast food counter" loading="lazy" decoding="async"><div class="gch"><span>Fast food</span><span>Confectionery</span></div></div>
-   <div class="skt"><span class="no">04 · KITCHEN</span><h3>Fast Food</h3><p>Something quick before the gym or on the way home.</p><ul><li>Burgers, pastries and snacks</li><li>Updates on @olympusfastfood_</li></ul><a class="btn" href="https://www.instagram.com/olympusfastfood_" target="_blank" rel="noopener">See the menu</a></div></article>
-  <article class="sk" style="--i:4"><div class="skm"><img src="/i/gold-1200.webp" srcset="/i/gold-800.webp 800w, /i/gold-1200.webp 1200w" sizes="(max-width:820px) 94vw, 640px" alt="The Olympus building by day" loading="lazy" decoding="async"><div class="gch"><span>Salon</span><span>Pharmacy</span><span>Boutique</span></div></div>
-   <div class="skt"><span class="no">05 · BY DAY</span><h3>Salon, pharmacy and boutique</h3><p>Get your hair done, pick up what you need and shop for the night, all at the same address.</p><a class="btn" href="#contact">Find us</a><span class="tag" style="margin-top:4px">Photos to come from Olympus.</span></div></article>
+  <article class="sk" style="--i:0"><div class="skm"><img src="/i/club-1600.webp" srcset="/i/club-800.webp 800w, /i/club-1600.webp 1600w" sizes="(max-width:820px) 94vw, 640px" alt="Dance floor at Olympus Night Club" loading="lazy" decoding="async"><div class="sks"><img src="/i/front-600.webp" alt="" loading="lazy" decoding="async"></div><div class="gch"><span>Wednesday</span><span>Friday</span><span>Sunday</span></div></div>
+   <div class="skt"><span class="no">01 · NIGHT CLUB</span><h3>Olympus Night Club</h3><p>Resident DJs, hype men on the mic and live percussion on the big nights.</p><ul><li>Tables and bottle service</li><li>Book ahead for Friday nights</li></ul><a class="btn" href="#book" data-b="A table">Reserve a table</a><span class="tag" style="margin-top:2px">Sample photo. Olympus would supply its own.</span></div></article>
+  <article class="sk" style="--i:1"><div class="skm"><img src="/i/lounge-1600.webp" srcset="/i/lounge-800.webp 800w, /i/lounge-1600.webp 1600w" sizes="(max-width:820px) 94vw, 640px" alt="VIP booths in the lounge" loading="lazy" decoding="async"><div class="sks"><img src="/i/bar-800.webp" alt="" loading="lazy" decoding="async"></div><div class="gch"><span>VIP</span><span>Bottle service</span></div></div>
+   <div class="skt"><span class="no">02 · LOUNGE AND BAR</span><h3>The lounge</h3><p>Booths for your group and bottles brought to the table.</p><ul><li>VIP section on request</li><li>Champions League match nights</li></ul><a class="btn" href="#book" data-b="VIP section">Book a VIP booth</a><span class="tag" style="margin-top:2px">Sample photo. Olympus would supply its own.</span></div></article>
+  <article class="sk" style="--i:2"><div class="skm"><img src="/i/taverna-1600.webp" srcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" sizes="(max-width:820px) 94vw, 640px" alt="Taverna by Olympus terrace at night" loading="lazy" decoding="async"><div class="gch"><span>Dinner</span><span>Karaoke night</span></div></div>
+   <div class="skt"><span class="no">03 · RESTAURANT</span><h3>Taverna by Olympus</h3><p>Food and drinks on the terrace, a good place to start the night.</p><ul><li>Karaoke night at Taverna</li><li>Menus posted on @taverna_by_olympus_</li></ul><a class="btn" href="#book" data-b="Taverna order">Book or order at Taverna</a></div></article>
+  <article class="sk" style="--i:3"><div class="skm"><img src="/i/gymr-1400.webp" srcset="/i/gymr-800.webp 800w, /i/gymr-1400.webp 1400w" sizes="(max-width:820px) 94vw, 640px" alt="The Olympus Fitness gym floor" loading="lazy" decoding="async"><div class="sks"><img src="/i/class-800.webp" alt="" loading="lazy" decoding="async"></div><div class="gch"><span>Strength floor</span><span>Classes</span></div></div>
+   <div class="skt"><span class="no">04 · GYM</span><h3>Olympus Fitness</h3><p>Train in the day, come back for the night.</p><ul><li>Racks, dumbbells and machines</li><li>Step classes on the forecourt</li><li>Day passes and monthly plans</li></ul><a class="btn" href="#book" data-b="Gym membership">Ask about membership</a></div></article>
+  <article class="sk" style="--i:4"><div class="skm"><img src="/i/ffr-1000.webp" srcset="/i/ffr-600.webp 600w, /i/ffr-1000.webp 1000w" sizes="(max-width:820px) 94vw, 640px" alt="The Olympus fast food and confectionery" loading="lazy" decoding="async" style="object-position:center 40%"><div class="gch"><span>Fast food</span><span>Confectionery</span></div></div>
+   <div class="skt"><span class="no">05 · KITCHEN</span><h3>Fast Food and Confectionery</h3><p>Something quick before the gym or on the way home.</p><ul><li>Burgers, pastries and snacks</li><li>Updates on @olympusfastfood_</li></ul><a class="btn" href="#book" data-b="Fast food order">Order fast food</a></div></article>
+  <article class="sk" style="--i:5"><div class="skm"><img src="/i/salon-1400.webp" srcset="/i/salon-800.webp 800w, /i/salon-1400.webp 1400w" sizes="(max-width:820px) 94vw, 640px" alt="A stylist at work in the salon" loading="lazy" decoding="async" style="object-position:center 30%"><div class="gch"><span>Hair</span><span>Styling</span></div></div>
+   <div class="skt"><span class="no">06 · SALON</span><h3>The salon</h3><p>Get your hair done before a night out.</p><a class="btn" href="#book" data-b="Salon appointment">Book an appointment</a><span class="tag" style="margin-top:2px">Sample photo. Olympus would supply its own.</span></div></article>
+  <article class="sk" style="--i:6"><div class="skm"><img src="/i/pharmacy-1400.webp" srcset="/i/pharmacy-800.webp 800w, /i/pharmacy-1400.webp 1400w" sizes="(max-width:820px) 94vw, 640px" alt="Pharmacist at the counter" loading="lazy" decoding="async" style="object-position:35% center"><div class="gch"><span>Pharmacy</span></div></div>
+   <div class="skt"><span class="no">07 · PHARMACY</span><h3>The pharmacy</h3><p>On site for what you need during the day.</p><a class="btn" href="#book" data-b="Pharmacy enquiry">Send an enquiry</a><span class="tag" style="margin-top:2px">Sample photo. Olympus would supply its own.</span></div></article>
+  <article class="sk" style="--i:7"><div class="skm"><img src="/i/boutique-1400.webp" srcset="/i/boutique-800.webp 800w, /i/boutique-1400.webp 1400w" sizes="(max-width:820px) 94vw, 640px" alt="Dresses on rails in the boutique" loading="lazy" decoding="async"><div class="gch"><span>Boutique</span></div></div>
+   <div class="skt"><span class="no">08 · BOUTIQUE</span><h3>The boutique</h3><p>Shop for the night without leaving New Road.</p><a class="btn" href="https://wa.me/2348032575150?text=Hello%20Olympus%2C%20I%27d%20like%20to%20ask%20about%20the%20boutique." target="_blank" rel="noopener">Ask on WhatsApp</a><span class="tag" style="margin-top:2px">Sample photo. Olympus would supply its own.</span></div></article>
  </div>
 </section>
 
 <section id="night" class="scrub" aria-label="A night at Olympus">
  <div class="stage" id="stage">
-  <img class="ly" src="/i/gold-1200.webp" srcset="/i/gold-800.webp 800w, /i/gold-1200.webp 1200w" sizes="100vw" alt="" loading="lazy" decoding="async">
+  <img class="ly" src="/i/day-1000.webp" srcset="/i/day-600.webp 600w, /i/day-1000.webp 1000w" sizes="100vw" alt="" loading="lazy" decoding="async" style="object-position:center 65%">
   <img class="ly" src="/i/taverna-1600.webp" srcset="/i/taverna-800.webp 800w, /i/taverna-1600.webp 1600w" sizes="100vw" alt="" loading="lazy" decoding="async">
-  <img class="ly" src="/i/lobby-1200.webp" srcset="/i/lobby-800.webp 800w, /i/lobby-1200.webp 1200w" sizes="100vw" alt="" loading="lazy" decoding="async">
-  <img class="ly" src="/i/night-1000.webp" srcset="/i/night-560.webp 560w, /i/night-1000.webp 1000w" sizes="100vw" alt="" loading="lazy" decoding="async" style="object-position:center 28%">
-  <img class="ly" src="/i/food-1600.webp" srcset="/i/food-800.webp 800w, /i/food-1600.webp 1600w" sizes="100vw" alt="" loading="lazy" decoding="async">
+  <img class="ly" src="/i/lounge-1600.webp" srcset="/i/lounge-800.webp 800w, /i/lounge-1600.webp 1600w" sizes="100vw" alt="" loading="lazy" decoding="async">
+  <img class="ly" src="/i/front-1000.webp" srcset="/i/front-600.webp 600w, /i/front-1000.webp 1000w" sizes="100vw" alt="" loading="lazy" decoding="async" style="object-position:center 25%">
+  <img class="ly" src="/i/ffr-1000.webp" srcset="/i/ffr-600.webp 600w, /i/ffr-1000.webp 1000w" sizes="100vw" alt="" loading="lazy" decoding="async" style="object-position:center 40%">
   <div class="sc L-left"><em>8 pm</em><h3>Arrive on New Road.</h3><p>Park in the forecourt. The building is already lit.</p></div>
   <div class="sc L-right"><em>9 pm</em><h3>Dinner at Taverna.</h3><p>Eat on the terrace before the music starts.</p></div>
   <div class="sc L-lower"><em>11 pm</em><h3>The lounge fills up.</h3><p>Your table is waiting and the bottles come to you.</p></div>
@@ -483,7 +484,7 @@ footer b{color:var(--gd);letter-spacing:.22em}
   <div class="igh"><span class="igl"><img src="/i/logo-256.webp" alt="" loading="lazy"></span><span><b>@olympus_lifestyle.ng</b><small>Posters, line-ups and videos from the night go up here first.</small></span></div>
   <div class="ign"><div><b data-c="5252">5,252</b><small>followers</small></div><div><b data-c="1016">1,016</b><small>posts</small></div></div>
   <div class="cta"><a class="btn ig" href="https://www.instagram.com/olympus_lifestyle.ng" target="_blank" rel="noopener"><i data-i="ig"></i>Follow on Instagram</a><a class="btn o" href="https://www.instagram.com/taverna_by_olympus_" target="_blank" rel="noopener">@taverna_by_olympus_</a></div>
-  <div class="igg"><a href="https://www.instagram.com/olympus_lifestyle.ng" target="_blank" rel="noopener"><img src="/i/night-560.webp" alt="Olympus Night Club" style="object-position:center 30%" loading="lazy" decoding="async"><span>Night club</span></a><a href="https://www.instagram.com/taverna_by_olympus_" target="_blank" rel="noopener"><img src="/i/taverna-800.webp" alt="Taverna by Olympus" loading="lazy" decoding="async"><span>Taverna</span></a><a href="https://www.instagram.com/olympusfastfood_" target="_blank" rel="noopener"><img src="/i/food-800.webp" alt="Olympus fast food" loading="lazy" decoding="async"><span>Fast food</span></a></div>
+  <div class="igg"><a href="https://www.instagram.com/olympus_lifestyle.ng" target="_blank" rel="noopener"><img src="/i/front-600.webp" alt="Olympus Night Club" style="object-position:center 30%" loading="lazy" decoding="async"><span>Night club</span></a><a href="https://www.instagram.com/taverna_by_olympus_" target="_blank" rel="noopener"><img src="/i/taverna-800.webp" alt="Taverna by Olympus" loading="lazy" decoding="async"><span>Taverna</span></a><a href="https://www.instagram.com/olympusfastfood_" target="_blank" rel="noopener"><img src="/i/ffr-600.webp" alt="Olympus fast food" loading="lazy" decoding="async"><span>Fast food</span></a></div>
   <div class="so"><a href="https://www.instagram.com/olympusfastfood_" target="_blank" rel="noopener"><span class="ic" style="background:linear-gradient(135deg,#f9a03f,#e1306c,#7b3fe4)"><i data-i="ig"></i></span>@olympusfastfood_</a><a href="https://www.facebook.com/share/1M8uErHuLu/" target="_blank" rel="noopener"><span class="ic" style="background:#1877f2"><i data-i="fb"></i></span>Facebook</a><a href="https://wa.me/2348032575150" target="_blank" rel="noopener"><span class="ic" style="background:#25d366"><i data-i="wa"></i></span>WhatsApp</a></div>
  </div>
 </section>
@@ -515,6 +516,7 @@ footer b{color:var(--gd);letter-spacing:.22em}
 </main>
 <footer><b>OLYMPUS</b> · You only live once.<br>New Road by Awolowo Junction, Sapele, Delta State.<br><small>Concept demo prepared for Olympus Lifestyle Sapele. Not the official website.</small></footer>
 <div class="fabs"><a class="fab wa" href="https://wa.me/2348032575150" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><i data-i="wa"></i></a><a class="fab cl" href="tel:+2347071058870" data-call aria-label="Call reservations"><i data-i="phone"></i></a></div>
+<div id="sv" role="menu" aria-label="What would you like to book?"><small>What would you like?</small></div>
 <div id="ts" role="status"></div>
 <div id="cs" role="dialog" aria-label="Call Olympus" aria-hidden="true"><div class="cc"><b>Call Olympus reservations</b><div class="big">0707 105 8870</div><a class="btn" href="tel:+2347071058870">Call now</a><button class="btn o" id="cp">Copy number</button><a class="btn g" href="https://wa.me/2348032575150" target="_blank" rel="noopener">Chat on WhatsApp</a><button class="btn o" data-x>Close</button></div></div>
 
@@ -538,8 +540,8 @@ $$('.nt').forEach(n=>n.classList.toggle('now',+n.dataset.day===td));
 /* hero slideshow: first image is in the HTML, the rest load after the page */
 const hs=$('#hs'),sg=$('#sg'),pm=matchMedia('(orientation:portrait)').matches;let hi=0,ht,hims=[hs.firstElementChild];
 const src=(k,a,b)=>({src:IMG+k+'-'+b+'.webp',srcset:`${IMG}${k}-${a}.webp ${a}w, ${IMG}${k}-${b}.webp ${b}w`});
-addEventListener('load',()=>{const L=pm?[['night',560,1000],['class',800,1200],['gold',800,1200],['food',800,1600]]:[['class',800,1200],['gold',800,1200],['food',800,1600]];
- L.forEach((x,i)=>{const m=new Image(),s=src(...x);m.sizes='100vw';m.srcset=s.srcset;m.src=s.src;m.alt='';m.decoding='async';if(i%2==0)m.classList.add('zo');if(x[0]=='night')m.style.objectPosition='center 30%';hs.append(m);hims.push(m)});
+addEventListener('load',()=>{const L=pm?[['day',600,1000],['club',800,1600],['taverna',800,1600],['ffr',600,1000]]:[['club',800,1600],['day',600,1000],['lounge',800,1600],['gymr',800,1400]];
+ L.forEach((x,i)=>{const m=new Image(),s=src(...x);m.sizes='100vw';m.srcset=s.srcset;m.src=s.src;m.alt='';m.decoding='async';if(i%2==0)m.classList.add('zo');if(x[0]=='day')m.style.objectPosition='center 60%';hs.append(m);hims.push(m)});
  hims.forEach(()=>sg.append(document.createElement('i')));shw(0)});
 const shw=i=>{const p=hims[hi];if(p&&hi!=i){p.classList.remove('on');p.classList.add('out');setTimeout(()=>p.classList.remove('out'),1500)}const m=hims[i];m.classList.remove('out');void m.offsetWidth;m.classList.add('on');hi=i;[...sg.children].forEach((b,j)=>{b.classList.remove('on');void b.offsetWidth;if(j==i)b.classList.add('on')});clearTimeout(ht);if(!RM)ht=setTimeout(()=>shw((i+1)%hims.length),5200)};
 /* marquees */
@@ -572,14 +574,15 @@ function frame(){const y=scrollY,vh=innerHeight,dh=document.documentElement.scro
  requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 /* coverflow */
-const CF=[['night',560,1000,'Olympus Night Club','DJs, hype men and tables until late.','A table','center 28%'],['taverna',800,1600,'Taverna by Olympus','Dinner and drinks before the club opens.','A table'],['gym',800,800,'Olympus Fitness','Weights, machines and group classes.','Gym membership'],['food',800,1600,'Fast Food','Burgers, pastries and late bites.','A table'],['class',800,1200,'Forecourt classes','Step sessions outside the building.','Gym membership'],['gold',800,1200,'Olympus by Day','Salon, pharmacy and boutique on the same site.','An event'],['lobby',800,1200,'Stay (concept)','Rooms beside the club. Sample photo.','A room']];
+const LB={'A table':'Book a table','VIP section':'Book a VIP booth','Taverna order':'Book Taverna','Gym membership':'Ask about membership','Fast food order':'Order fast food','Salon appointment':'Book an appointment','Pharmacy enquiry':'Send an enquiry','An event':'Plan an event','A room':'Request a room'};
+const CF=[['club',800,1600,'Olympus Night Club','DJs, hype men and tables until late.','A table'],['lounge',800,1600,'The lounge','VIP booths and bottle service.','VIP section'],['taverna',800,1600,'Taverna by Olympus','Dinner and drinks before the club opens.','Taverna order'],['gymr',800,1400,'Olympus Fitness','Racks, dumbbells and group classes.','Gym membership'],['ffr',600,1000,'Fast Food','Burgers, pastries and late bites.','Fast food order','center 45%'],['salon',800,1400,'The salon','Hair and styling before a night out.','Salon appointment','center 30%'],['pharmacy',800,1400,'The pharmacy','On site during the day.','Pharmacy enquiry'],['boutique',800,1400,'The boutique','Shop for the night on New Road.','An event'],['day',600,1000,'Olympus by Day','The building on New Road.','An event','center 60%'],['lobby',800,1200,'Stay (concept)','Rooms beside the club. Sample photo.','A room']];
 const cft=$('#cft'),cfd=$('#cfd'),cfc=$('#cfc'),nF=CF.length;let fc=0,fct,fIn=0,fHov=0,fx=null,fMoved=0;
 CF.forEach((d,i)=>{const c=document.createElement('div');c.className='cfi';c.innerHTML=`<img src="${IMG}${d[0]}-${d[2]}.webp" srcset="${IMG}${d[0]}-${d[1]}.webp ${d[1]}w, ${IMG}${d[0]}-${d[2]}.webp ${d[2]}w" sizes="(max-width:800px) 80vw, 720px" alt="${d[3]}" loading="lazy" decoding="async"${d[6]?` style="object-position:${d[6]}"`:''}>`;c.onclick=()=>{if(!fMoved&&i!==fc)cgo(i)};cft.append(c);const dt=document.createElement('i');dt.onclick=()=>cgo(i);cfd.append(dt)});
 const cfis=[...cft.children],cfds=[...cfd.children];
 const clay=()=>{cfis.forEach((c,i)=>{let o=((i-fc)%nF+nF)%nF;if(o>nF/2)o-=nF;const a=Math.abs(o),sg=Math.sign(o),jump=c._o!==undefined&&Math.abs(o-c._o)>2;c._o=o;if(jump)c.style.transition='none';
   c.style.transform=`translate(-50%,-50%) translateX(calc(var(--W) * ${(sg*(a?.24+.18*a:0)).toFixed(3)})) translateZ(${-a*140}px) rotateY(${sg*Math.min(a,1)*-28}deg) scale(${1-Math.min(a,3)*.1})`;
   c.style.zIndex=20-a;c.style.opacity=a>3?0:1;c.style.setProperty('--dm',Math.min(a*.28,.8));c.classList.toggle('on',a==0);if(jump){void c.offsetWidth;c.style.transition=''}});
- cfds.forEach((d,i)=>d.classList.toggle('on',i==fc));const d=CF[fc];cfc.classList.add('sw');setTimeout(()=>{cfc.querySelector('h3').textContent=d[3];cfc.querySelector('p').textContent=d[4];const b=cfc.querySelector('a');b.dataset.b=d[5];b.textContent=d[5]=='A room'?'Request a room':d[5]=='Gym membership'?'Ask about membership':'Book a table';cfc.classList.remove('sw')},200)};
+ cfds.forEach((d,i)=>d.classList.toggle('on',i==fc));const d=CF[fc];cfc.classList.add('sw');setTimeout(()=>{cfc.querySelector('h3').textContent=d[3];cfc.querySelector('p').textContent=d[4];const b=cfc.querySelector('a');b.dataset.b=d[5];b.textContent=LB[d[5]]||'Book';cfc.classList.remove('sw')},200)};
 const cplan=()=>{clearTimeout(fct);if(!RM&&fIn&&!fHov&&!document.hidden)fct=setTimeout(()=>cgo(fc+1),4200)},cgo=i=>{fc=(i+nF)%nF;clay();cplan()};
 clay();$('#cfl').onclick=()=>cgo(fc-1);$('#cfr').onclick=()=>cgo(fc+1);
 const cf=$('#cf');new IntersectionObserver(e=>{fIn=e[0].isIntersecting;cplan()},{threshold:.4}).observe(cf);document.addEventListener('visibilitychange',cplan);
@@ -587,9 +590,9 @@ cf.addEventListener('keydown',e=>{if(e.key=='ArrowLeft')cgo(fc-1);if(e.key=='Arr
 cf.addEventListener('pointerenter',e=>{if(e.pointerType=='mouse'){fHov=1;cplan()}});cf.addEventListener('pointerleave',()=>{fHov=0;cplan()});
 cf.addEventListener('pointerdown',e=>{fx=e.clientX;fMoved=0});cf.addEventListener('pointerup',e=>{if(fx===null)return;const d=e.clientX-fx;fx=null;if(Math.abs(d)>40){fMoved=1;cgo(fc+(d<0?1:-1));setTimeout(()=>fMoved=0,50)}});
 /* ring gallery */
-const GR0=[['night',560,'Night club','Olympus at night'],['taverna',800,'Taverna','Terrace dining'],['gym',800,'Olympus Fitness','Strength floor'],['food',800,'Fast Food','The counter'],['class',800,'Forecourt','Step class'],['gold',800,'Olympus by Day','New Road'],['lobby',800,'Stay','Sample photo']];const GR=[...GR0,...GR0].map(g=>[g[0],g[2],g[3],g[1]]);
+const GR0=[['front',600,'Night club','The front at night'],['bar',800,'The bar','Cocktails'],['taverna',800,'Taverna','Terrace dining'],['gymr',800,'Olympus Fitness','Strength floor'],['kettle',800,'Olympus Fitness','Training'],['ffr',600,'Fast Food','Confectionery'],['salon',800,'Salon','Sample photo'],['pharmacy',800,'Pharmacy','Sample photo'],['boutique',800,'Boutique','Sample photo'],['day',600,'Olympus by Day','New Road'],['club',800,'Dance floor','Sample photo'],['lounge',800,'The lounge','Sample photo']];const GR=GR0.map(g=>[g[0],g[2],g[3],g[1]]);
 const ring=$('#ring'),rgc=$('#rgc'),nR=GR.length,ST=360/nR;let RR=0,rgF=-1;
-GR.forEach((g,i)=>{const c=document.createElement('figure');c.className='rc';c.style.margin=0;c.innerHTML=`<img src="${IMG}${g[0]}-${g[3]}.webp" alt="${g[1]}" loading="lazy" decoding="async"${g[0]=='night'?' style="object-position:center 30%"':''}><span>${g[1]}<small>${g[2]}</small></span>`;ring.append(c)});
+GR.forEach((g,i)=>{const c=document.createElement('figure');c.className='rc';c.style.margin=0;c.innerHTML=`<img src="${IMG}${g[0]}-${g[3]}.webp" alt="${g[1]}" loading="lazy" decoding="async"${{front:' style="object-position:center 25%"',bar:' style="object-position:60% center"',salon:' style="object-position:55% center"'}[g[0]]||''}><span>${g[1]}<small>${g[2]}</small></span>`;ring.append(c)});
 const rcs=[...ring.children],rgSize=()=>{const w=rcs[0].offsetWidth;RR=Math.round(w/2/Math.tan(Math.PI/nR)*1.07);rcs.forEach((c,i)=>c.style.transform=`rotateY(${i*ST}deg) translateZ(${RR}px)`)};rgSize();addEventListener('resize',rgSize);
 new IntersectionObserver(e=>{rgIn=e[0].isIntersecting},{rootMargin:'100px'}).observe(rgv);
 let rx=null;rgv.addEventListener('pointerdown',e=>{rx=e.clientX;rgv.setPointerCapture(e.pointerId)});rgv.addEventListener('pointermove',e=>{if(rx===null)return;rgT-=(e.clientX-rx)*.35;rx=e.clientX});rgv.addEventListener('pointerup',()=>{rx=null;rgT=Math.round(rgT/ST)*ST});rgv.addEventListener('pointercancel',()=>rx=null);
@@ -606,7 +609,7 @@ const cs=$('#cs'),sheet=v=>{cs.classList.toggle('on',v);cs.setAttribute('aria-hi
 document.addEventListener('click',e=>{if(e.target.closest('[data-call]')){e.preventDefault();op(0);sheet(1)}if(e.target==cs||e.target.closest('[data-x]'))sheet(0)});
 $('#cp').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText('07071058870'):Promise.reject()).then(()=>toast('Number copied'),()=>toast('Number: 0707 105 8870'))};addEventListener('keydown',e=>e.key=='Escape'&&sheet(0));
 /* booking wizard */
-const B={type:'A table',guests:'2'},BT=['A table','VIP section','Bottle service','A room','An event','Gym membership'],BG=['2','4','6','8','10+'];let st=0;
+const B={type:'A table',guests:'2'},BT=['A table','VIP section','Bottle service','A room','An event','Taverna order','Fast food order','Gym membership','Salon appointment','Pharmacy enquiry'],BG=['2','4','6','8','10+'];let st=0;
 const glide=box=>{let s=box.querySelector('.dsl');if(!s){s=document.createElement('i');s.className='dsl';box.prepend(s);box.classList.add('sl')}const c=box.querySelector('[aria-pressed=true]');if(!c||!c.offsetWidth)return;s.style.width=c.offsetWidth+'px';s.style.height=c.offsetHeight+'px';s.style.transform=`translate(${c.offsetLeft}px,${c.offsetTop}px)`};
 const chips=(id,arr,key)=>{const box=$(id);box.innerHTML=arr.map(v=>`<button type="button" class="ch" aria-pressed="${v==B[key]}">${v}</button>`).join('');box.onclick=e=>{const b=e.target.closest('.ch');if(!b)return;$$(id+' .ch').forEach(x=>x.setAttribute('aria-pressed',x==b));B[key]=b.textContent;glide(box)}};
 chips('#bt',BT,'type');chips('#bg',BG,'guests');
@@ -621,8 +624,14 @@ $('#go').onclick=()=>{const er=$('#er');er.textContent='';
 $('#bkb').onclick=()=>{st--;$('#er').textContent='';view()};view();
 document.addEventListener('click',e=>{const a=e.target.closest('[data-b]');if(a){B.type=a.dataset.b;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==B.type));setTimeout(()=>glide($('#bt')),600)}});
 addEventListener('resize',()=>{glide($('#bt'));glide($('#bg'))});
-const hbd=$('#hbd');hbd.min=dd.min;hbd.value=dd.min;
-$('#hb').onsubmit=e=>{e.preventDefault();B.type=$('#hbt').value;B.guests=$('#hbg').value;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==B.type));$$('#bg .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==B.guests));dd.value=hbd.value;st=hbd.value?2:1;view();$('#book').scrollIntoView({behavior:RM?'auto':'smooth'});setTimeout(()=>$(st==2?'#nm':'#dd').focus({preventScroll:true}),700)};
+/* service menu on the hero button */
+const SV=[['A table','glass','Reserve a table','Club or lounge'],['VIP section','music','VIP booth','With bottle service'],['A room','pin','Book a room','On this site'],['Taverna order','glass','Taverna','Dinner or an order'],['Fast food order','glass','Fast food','Order ahead'],['Gym membership','gym','Gym','Membership or day pass'],['Salon appointment','pin','Salon','Book an appointment'],['Pharmacy enquiry','pin','Pharmacy','Ask what is in stock'],['An event','music','An event','Birthday or private party']];
+const sv=$('#sv'),svb=$('#svb');sv.insertAdjacentHTML('beforeend',SV.map((x,i)=>`<button type="button" role="menuitem" data-v="${i}"><span class="ic"></span><span><b>${x[2]}</b><br><small>${x[3]}</small></span></button>`).join(''));
+const ICS={glass:IC.glass,music:IC.music,pin:IC.pin,gym:IC.gym};$$('#sv button').forEach((b,i)=>b.firstChild.innerHTML=`<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICS[SV[i][1]]}</svg>`);
+const svOpen=v=>{if(v){const r=svb.parentElement.getBoundingClientRect(),h=Math.min(innerHeight*.7,520),down=innerHeight-r.bottom>h+16||r.top<h;sv.classList.toggle('up',!down);sv.style.left=Math.min(r.left,innerWidth-sv.offsetWidth-16)+'px';sv.style.top=down?r.bottom+8+'px':'';sv.style.bottom=down?'':innerHeight-r.top+8+'px'}sv.classList.toggle('on',v);svb.setAttribute('aria-expanded',v);if(v)setTimeout(()=>sv.querySelector('button').focus({preventScroll:true}),60)};
+svb.onclick=e=>{e.stopPropagation();svOpen(!sv.classList.contains('on'))};
+document.addEventListener('click',e=>{if(!e.target.closest('#sv'))svOpen(0)});addEventListener('keydown',e=>e.key=='Escape'&&svOpen(0));addEventListener('scroll',()=>sv.classList.contains('on')&&svOpen(0),{passive:true});
+sv.onclick=e=>{const b=e.target.closest('button');if(!b)return;const t=SV[b.dataset.v][0];svOpen(0);B.type=t;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==t));st=0;view();$('#book').scrollIntoView({behavior:RM?'auto':'smooth'})};
 /* ask olympus */
 const TEL='0707 105 8870',FAQ=[['What is on tonight?',()=>nx?`Nothing tonight. The next night is ${DN[nd]}: ${NT[nd]}. Posters and line-ups go up on @olympus_lifestyle.ng.`:`Tonight is ${NT[td]}. Book a table early.`],['How do I book a table?',()=>'Use the four-step form on this page. When you finish, WhatsApp opens with your booking written out. You can also call '+TEL+'.'],['Where are you?',()=>'New Road by Awolowo Junction (New Ogorode Road), Sapele, Delta State. The contact section has a directions link.'],['Is there a gym?',()=>'Yes. Olympus Fitness is on the same site. Ask about classes, day passes and monthly membership.']];
 const RU=[[/tonight|today|night|party|event|dj|week/,FAQ[0][1]],[/book|reserv|table|vip|bottle/,FAQ[1][1]],[/where|address|locat|direction|find|road/,FAQ[2][1]],[/gym|fitness|workout|train/,FAQ[3][1]],[/food|eat|taverna|dinner|drink|menu|confection/,()=>'Taverna by Olympus serves food and drinks, and the fast food counter and confectionery are on site. Menus go up on @taverna_by_olympus_ and @olympusfastfood_.'],[/room|stay|hotel|sleep/,()=>'Rooms are a concept on this page. The Olympus team would confirm room types and rates.'],[/salon|pharm|boutique|shop/,()=>'The salon, pharmacy and boutique are at the same address.'],[/price|cost|how much|fee/,()=>'The team confirms prices. Call '+TEL+' or send a WhatsApp message.'],[/call|phone|number|contact|whatsapp/,()=>'Call reservations on '+TEL+' or tap the WhatsApp button.'],[/^(hi|hello|hey|good)/,()=>'Hello, welcome to Olympus. What would you like to know?'],[/thank/,()=>'You are welcome. See you on New Road.']];
