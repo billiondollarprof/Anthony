@@ -123,3 +123,13 @@ const log=$('#log'),add=(t,c)=>{const d=document.createElement('div');d.classNam
 const ask=async(q,f)=>{add(q,'me');const ty=add('','bot');ty.innerHTML='<span class="ty"><i></i><i></i><i></i></span>';await new Promise(r=>setTimeout(r,650));ty.remove();const l=q.toLowerCase(),r=f||((RU.find(x=>x[0].test(l))||[0,()=>'I do not have that yet. Call '+TEL+' and the team will help.'])[1]);add(r(),'bot')};
 $('#cps').innerHTML=FAQ.map((f,i)=>`<button type="button" data-q="${i}">${f[0]}</button>`).join('');$('#cps').onclick=e=>{const b=e.target.closest('button');if(b)ask(FAQ[b.dataset.q][0],FAQ[b.dataset.q][1])};
 $('#cfm').onsubmit=e=>{e.preventDefault();const v=$('#ci').value.trim();if(v){$('#ci').value='';ask(v)}};
+/* entrances: run once per element, then hand the element back to its normal styles.
+   Closed photos have no visible area, so we watch the block around them instead. */
+if(!RM){const W=new Map(),fire=t=>{t.classList.add('in');setTimeout(()=>t.classList.remove('deal','uv','pop','in'),+t.dataset.hold||2400)};
+ const ent=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;ent.unobserve(e.target);(W.get(e.target)||[]).forEach(fire)}),{rootMargin:'0px 0px -18% 0px'});
+ const tag=(el,c,k,hold,watch)=>{if(!el)return;el.classList.remove('rv');el.classList.add(c);if(k!=null)el.style.setProperty('--k',k);if(hold)el.dataset.hold=hold;const w=watch||el;if(!W.has(w)){W.set(w,[]);ent.observe(w)}W.get(w).push(el)};
+ ['.qa','.nts','.rms'].forEach(s=>{const g=$(s);if(!g)return;[...g.children].forEach((c,i)=>{c.classList.remove('rv');c.style.setProperty('--k',i)});tag(g,'deal',null,1400+g.children.length*120)});
+ [['.stackd .im',0,'34px'],['.fl2',2,'20px'],['.ban',0,'34px'],['.ct .im',0,'34px']].forEach(([s,k,r])=>{const el=$(s);if(el){el.style.setProperty('--r',r);tag(el,'uv',k,2600,el.parentElement)}});
+ $$('.igg a').forEach((a,i)=>{a.style.setProperty('--r','16px');tag(a,'uv',i,2800,a.parentElement)});
+ tag($('.bk'),'pop',null,1500);
+}
