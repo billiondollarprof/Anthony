@@ -106,7 +106,7 @@ $('#go').onclick=()=>{const er=$('#er');er.textContent='';
  if(st==3){const ref='OLY-'+Math.random().toString(36).slice(2,8).toUpperCase(),t=`Hello Olympus, I'd like to reserve.\nBooking: ${B.type}\nGuests: ${B.guests}\nDate: ${dd.value}\nArrival: ${$('#tm').value}\nName: ${$('#nm').value}\nPhone: ${$('#ph').value}\nNotes: ${$('#nt').value||'None'}\nRef: ${ref}`;open('https://wa.me/'+WA+'?text='+encodeURIComponent(t),'_blank');$$('.pn,#sp,#nv').forEach(e=>e.style.display='none');$('#ok').hidden=false;$('#rf').textContent=ref;return}
  st++;view()};
 $('#bkb').onclick=()=>{st--;$('#er').textContent='';view()};view();
-document.addEventListener('click',e=>{const a=e.target.closest('[data-b]');if(a){B.type=a.dataset.b;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==B.type));setTimeout(()=>glide($('#bt')),600)}});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-b]');if(a){btPick=1;B.type=a.dataset.b;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==B.type));setTimeout(()=>glide($('#bt')),600)}});
 let gW=innerWidth;addEventListener('resize',()=>{if(innerWidth!==gW){gW=innerWidth;glide($('#bt'));glide($('#bg'))}});
 /* service menu on the hero button */
 const SV=[['A table','glass','Reserve a table','Club or lounge'],['VIP section','music','VIP booth','With bottle service'],['A room','pin','Book a room','On this site'],['Taverna order','glass','Taverna','Dinner or an order'],['Fast food order','glass','Fast food','Order ahead'],['Gym membership','gym','Gym','Membership or day pass'],['Salon appointment','pin','Salon','Book an appointment'],['Pharmacy enquiry','pin','Pharmacy','Ask what is in stock'],['An event','music','An event','Birthday or private party']];
@@ -115,7 +115,7 @@ const ICS={glass:IC.glass,music:IC.music,pin:IC.pin,gym:IC.gym};$$('#sv button')
 const svOpen=v=>{if(v){const r=svb.parentElement.getBoundingClientRect(),h=Math.min(innerHeight*.7,520),down=innerHeight-r.bottom>h+16||r.top<h;sv.classList.toggle('up',!down);sv.style.left=Math.min(r.left,innerWidth-sv.offsetWidth-16)+'px';sv.style.top=down?r.bottom+8+'px':'';sv.style.bottom=down?'':innerHeight-r.top+8+'px'}sv.classList.toggle('on',v);svb.setAttribute('aria-expanded',v);if(v)setTimeout(()=>sv.querySelector('button').focus({preventScroll:true}),60)};
 svb.onclick=e=>{e.stopPropagation();svOpen(!sv.classList.contains('on'))};
 document.addEventListener('click',e=>{if(!e.target.closest('#sv'))svOpen(0)});addEventListener('keydown',e=>e.key=='Escape'&&svOpen(0));addEventListener('scroll',()=>sv.classList.contains('on')&&svOpen(0),{passive:true});
-sv.onclick=e=>{const b=e.target.closest('button');if(!b)return;const t=SV[b.dataset.v][0];svOpen(0);B.type=t;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==t));st=0;view();$('#book').scrollIntoView({behavior:RM?'auto':'smooth'})};
+sv.onclick=e=>{const b=e.target.closest('button');if(!b)return;const t=SV[b.dataset.v][0];btPick=1;svOpen(0);B.type=t;$$('#bt .ch').forEach(x=>x.setAttribute('aria-pressed',x.textContent==t));st=0;view();$('#book').scrollIntoView({behavior:RM?'auto':'smooth'})};
 /* ask olympus */
 const TEL='0707 105 8870',FAQ=[['What is on tonight?',()=>nx?`Nothing tonight. The next night is ${DN[nd]}: ${NT[nd]}. Posters and line-ups go up on @olympus_lifestyle.ng.`:`Tonight is ${NT[td]}. Book a table early.`],['How do I book a table?',()=>'Use the four-step form on this page. When you finish, WhatsApp opens with your booking written out. You can also call '+TEL+'.'],['Where are you?',()=>'New Road by Awolowo Junction (New Ogorode Road), Sapele, Delta State. The contact section has a directions link.'],['Is there a gym?',()=>'Yes. Olympus Fitness is on the same site. Ask about classes, day passes and monthly membership.']];
 const RU=[[/tonight|today|night|party|event|dj|week/,FAQ[0][1]],[/book|reserv|table|vip|bottle/,FAQ[1][1]],[/where|address|locat|direction|find|road/,FAQ[2][1]],[/gym|fitness|workout|train/,FAQ[3][1]],[/food|eat|taverna|dinner|drink|menu|confection/,()=>'Taverna by Olympus serves food and drinks, and the fast food counter and confectionery are on site. Menus go up on @taverna_by_olympus_ and @olympusfastfood_.'],[/room|stay|hotel|sleep/,()=>'Rooms are a concept on this page. The Olympus team would confirm room types and rates.'],[/salon|pharm|boutique|shop/,()=>'The salon, pharmacy and boutique are at the same address.'],[/price|cost|how much|fee/,()=>'The team confirms prices. Call '+TEL+' or send a WhatsApp message.'],[/call|phone|number|contact|whatsapp/,()=>'Call reservations on '+TEL+' or tap the WhatsApp button.'],[/^(hi|hello|hey|good)/,()=>'Hello, welcome to Olympus. What would you like to know?'],[/thank/,()=>'You are welcome. See you on New Road.']];
@@ -123,13 +123,20 @@ const log=$('#log'),add=(t,c)=>{const d=document.createElement('div');d.classNam
 const ask=async(q,f)=>{add(q,'me');const ty=add('','bot');ty.innerHTML='<span class="ty"><i></i><i></i><i></i></span>';await new Promise(r=>setTimeout(r,650));ty.remove();const l=q.toLowerCase(),r=f||((RU.find(x=>x[0].test(l))||[0,()=>'I do not have that yet. Call '+TEL+' and the team will help.'])[1]);add(r(),'bot')};
 $('#cps').innerHTML=FAQ.map((f,i)=>`<button type="button" data-q="${i}">${f[0]}</button>`).join('');$('#cps').onclick=e=>{const b=e.target.closest('button');if(b)ask(FAQ[b.dataset.q][0],FAQ[b.dataset.q][1])};
 $('#cfm').onsubmit=e=>{e.preventDefault();const v=$('#ci').value.trim();if(v){$('#ci').value='';ask(v)}};
-/* entrances: run once per element, then hand the element back to its normal styles.
-   Closed photos have no visible area, so we watch the block around them instead. */
-if(!RM){const W=new Map(),fire=t=>{t.classList.add('in');setTimeout(()=>t.classList.remove('deal','uv','pop','in'),+t.dataset.hold||2400)};
- const ent=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;ent.unobserve(e.target);(W.get(e.target)||[]).forEach(fire)}),{rootMargin:'0px 0px -18% 0px'});
+/* entrances: run once per element, then hand the element back to its normal styles */
+if(!RM){const W=new Map(),fire=t=>{t.classList.add('in');setTimeout(()=>t.classList.remove('deal','uv','pop','in'),+t.dataset.hold||1800)};
+ const ent=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;ent.unobserve(e.target);(W.get(e.target)||[]).forEach(fire)}),{rootMargin:'0px 0px -6% 0px'});
  const tag=(el,c,k,hold,watch)=>{if(!el)return;el.classList.remove('rv');el.classList.add(c);if(k!=null)el.style.setProperty('--k',k);if(hold)el.dataset.hold=hold;const w=watch||el;if(!W.has(w)){W.set(w,[]);ent.observe(w)}W.get(w).push(el)};
- ['.qa','.nts','.rms'].forEach(s=>{const g=$(s);if(!g)return;[...g.children].forEach((c,i)=>{c.classList.remove('rv');c.style.setProperty('--k',i)});tag(g,'deal',null,1400+g.children.length*120)});
- [['.stackd .im',0,'34px'],['.fl2',2,'20px'],['.ban',0,'34px'],['.ct .im',0,'34px']].forEach(([s,k,r])=>{const el=$(s);if(el){el.style.setProperty('--r',r);tag(el,'uv',k,2600,el.parentElement)}});
- $$('.igg a').forEach((a,i)=>{a.style.setProperty('--r','16px');tag(a,'uv',i,2800,a.parentElement)});
- tag($('.bk'),'pop',null,1500);
+ ['.qa','.nts','.rms'].forEach(s=>{const g=$(s);if(!g)return;[...g.children].forEach((c,i)=>{c.classList.remove('rv');c.style.setProperty('--k',i)});tag(g,'deal',null,1200+g.children.length*80)});
+ [['.ban',0],['.ct .im',0]].forEach(([s,k])=>{const el=$(s);if(el)tag(el,'uv',k,1800,el.parentElement)});
+ $$('.igg a').forEach((a,i)=>tag(a,'uv',i,2000,a.parentElement));
+ tag($('.bk'),'pop',null,1200);
 }
+/* the coverflow keeps its own motion: no entrance on it */
+{const cfe=$('#cf');if(cfe){cfe.classList.remove('rv');cfe.classList.add('in')}}
+/* booking chips: until the guest touches the form, the gold highlight moves from one option to the next */
+let btPick=0,btI=0,btT=null,btIn=0;const btBox=$('#bt');
+['pointerdown','keydown','focusin'].forEach(ev=>$('.bk').addEventListener(ev,()=>{btPick=1},{passive:true}));
+const btStep=()=>{clearTimeout(btT);if(btPick||!btIn||RM||document.hidden||st!==0)return;const cs=[...btBox.querySelectorAll('.ch')];btI=(btI+1)%cs.length;cs.forEach((x,i)=>x.setAttribute('aria-pressed',i===btI));B.type=cs[btI].textContent;glide(btBox);btT=setTimeout(btStep,btI===0?2600:1500)};
+new IntersectionObserver(e=>{btIn=e[0].isIntersecting;clearTimeout(btT);if(btIn&&!btPick){btI=[...btBox.querySelectorAll('.ch')].findIndex(x=>x.getAttribute('aria-pressed')==='true');btT=setTimeout(btStep,1400)}},{threshold:.5}).observe(btBox);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&btIn&&!btPick)btT=setTimeout(btStep,1200)});
